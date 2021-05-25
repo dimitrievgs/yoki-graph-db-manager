@@ -1,13 +1,20 @@
 package org.vanilla_manager;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Random;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 
 public class SecondaryController {
     @FXML private Label label1;
+
 
     @FXML
     private void switchToPrimary() throws IOException {

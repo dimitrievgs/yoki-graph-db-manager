@@ -1,12 +1,18 @@
 package org.vanilla_manager;
 
 import javafx.application.Application;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.ChoiceBox;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 
 //руководство по осзданию проекта javafx: https://openjfx.io/openjfx-docs/
 
@@ -17,11 +23,16 @@ public class App extends Application {
 
     private static Scene scene;
 
+    public static void main(String[] args) {
+        launch();
+    }
+
     @Override
-    public void start(Stage stage) throws IOException {
+    public void start(Stage primaryStage) throws IOException {
         scene = new Scene(loadFXML("primary"), 640, 480);
-        stage.setScene(scene);
-        stage.show();
+        primaryStage.setScene(scene);
+        //Initialize();
+        primaryStage.show();
     }
 
     static void setRoot(String fxml) throws IOException {
@@ -33,8 +44,5 @@ public class App extends Application {
         return fxmlLoader.load();
     }
 
-    public static void main(String[] args) {
-        launch();
-    }
 
 }
