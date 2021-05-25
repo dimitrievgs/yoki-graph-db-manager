@@ -8,17 +8,148 @@
 <?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.Accordion?>
-<VBox alignment="CENTER" spacing="20.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.vanilla_manager.PrimaryController">
-   <children>
-      <Label text="Primary View" />
-      <Button fx:id="primaryButton" text="Switch to Secondary View" onAction="#switchToSecondary"/>
-      <ChoiceBox fx:id="choice_box" />
-      <Button text="Change ChoiceBox Value" onAction="#changeChoiceBoxValue" />
-      <TextField fx:id="NumericField1"/>
-      <TextField fx:id="TextField1"/>
-      <Accordion fx:id="Accordion1" />
-   </children>
-   <padding>
-      <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
-   </padding>
-</VBox>
+<?import javafx.scene.chart.AreaChart?>
+<?import javafx.scene.chart.NumberAxis?>
+<?import javafx.scene.chart.CategoryAxis?>
+<?import javafx.scene.chart.ScatterChart?>
+<?import javafx.scene.control.Hyperlink?>
+
+<?import javafx.scene.control.Slider?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.web.HTMLEditor?>
+<?import javafx.scene.control.TreeTableView?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.control.ToolBar?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.ToggleButton?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.ComboBox?>
+<Pane fx:id="pane1" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
+
+      xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="org.vanilla_manager.PrimaryController"><!--prefHeight="875.0" prefWidth="934.0"-->
+    <!-- spacing="0.0"  alignment="CENTER" -->
+    <children>
+        <MenuBar fx:id="menubar1"/>
+        <VBox fx:id="vbox0" layoutX="0.0" layoutY="24.0">
+            <!--<ToolBar >
+                <Button fx:id="bManageElements" text="Manage Elements" onAction="#ManageElements"/>
+                <Button fx:id="bManageClasses" text="Manage Classes" onAction="#ManageClasses"/>
+            </ToolBar>-->
+            <TabPane fx:id="tabpane1">
+                <Tab text="Manage Records">
+                    <HBox spacing="10" fx:id="tab1_hbox0">
+                        <VBox fx:id="T1_vbox1" prefHeight="171.0" prefWidth="200.0"
+                              spacing="10">
+                            <children>
+                                <HBox fx:id="T1_RecordName_parent">
+                                    <TextField fx:id="T1_RecordName"/>
+                                </HBox>
+                                <HBox spacing="10">
+                                    <ToggleButton fx:id="T1_bLoad_DB_Toggle" text="Plain (all)"
+                                                  onAction="#T1_Load_DB_Toggle" minWidth="80"/>
+                                    <Button fx:id="T1_bLoadDB" text="Reload" onAction="#T1_LoadDB" minWidth="80"/>
+                                    <Button fx:id="T1_bReadTextFromRecord" text="Read"
+                                            onAction="#T1_Read_Properties_Data_From_OVertex" minWidth="80"/>
+                                    <Button fx:id="T1_bSetTextToRecord" text="Write"
+                                            onAction="#T1_Write_Properties_Data_To_OVertex"
+                                            minWidth="80"/>
+                                    <padding>
+                                        <Insets bottom="0.0" left="0.0" right="0.0" top="0.0"/>
+                                    </padding>
+                                </HBox>
+                                <HBox spacing="10">
+                                    <Button fx:id="T1_bDuplicateRecord" text="Duplicate"
+                                            onAction="#T1_Duplicate_OVertex"
+                                            minWidth="80"/>
+                                    <Button fx:id="T1_bDeleteRecord" text="Delete" onAction="#T1_Delete_OVertex"
+                                            minWidth="80"/>
+                                    <Button fx:id="T1_bAddRecord" text="Add" onAction="#T1_Add_OVertex" minWidth="80"/>
+                                    <padding>
+                                        <Insets bottom="0.0" left="0.0" right="0.0" top="0.0"/>
+                                    </padding>
+                                </HBox>
+                                <TreeTableView fx:id="T1_treetableview1" prefWidth="200.0"></TreeTableView>
+                            </children>
+                            <padding>
+                                <Insets bottom="10.0" left="10.0" right="0.0" top="10.0"/>
+                            </padding>
+                        </VBox>
+                        <VBox fx:id="T1_vbox2" spacing="10">
+                            <children>
+                                <!--<TextField fx:id="T1_Record_Name_TextField" text="" style="-fx-font-size: 24px;"/>
+                                <HTMLEditor fx:id="T1_htmleditor1"/>-->
+                            </children>
+                            <padding>
+                                <Insets bottom="0.0" left="0.0" right="0.0" top="0.0"/>
+                            </padding>
+                        </VBox>
+                    </HBox>
+                </Tab>
+                <Tab text="Manage Classes">
+                    <HBox spacing="20">
+                        <VBox fx:id="T2_vbox1" prefHeight="171.0" prefWidth="200.0"
+                              spacing="10">
+                            <children>
+                                <HBox fx:id="T2_RecordName_parent">
+                                    <TextField fx:id="T2_RecordName"/>
+                                </HBox>
+                                <HBox spacing="10">
+                                    <Button fx:id="T2_bReadDB" text="Reload" onAction="#T2_LoadDB" minWidth="80"/>
+                                    <Button fx:id="T2_bReadTextFromRecord" text="Read"
+                                            onAction="#T2_Read_Properties_From_Class" minWidth="80"/>
+                                    <Button fx:id="T2_bSetTextToRecord" text="Write"
+                                            onAction="#T2_Write_Properties_To_Class"
+                                            minWidth="80"/>
+                                    <padding>
+                                        <Insets bottom="0.0" left="0.0" right="0.0" top="0.0"/>
+                                    </padding>
+                                </HBox>
+                                <HBox spacing="10">
+                                    <Button fx:id="T2_bDuplicateRecord" text="Duplicate" onAction="#T2_Duplicate_OClass"
+                                            minWidth="80"/>
+                                    <Button fx:id="T2_bDeleteRecord" text="Delete" onAction="#T2_Delete_OClass"
+                                            minWidth="80"/>
+                                    <Button fx:id="T2_bAddRecord" text="Add" onAction="#T2_Add_OClass" minWidth="80"/>
+                                    <padding>
+                                        <Insets bottom="0.0" left="0.0" right="0.0" top="0.0"/>
+                                    </padding>
+                                </HBox>
+                                <TreeTableView fx:id="T2_treetableview1" prefWidth="200.0"></TreeTableView>
+                            </children>
+                            <padding>
+                                <Insets bottom="10.0" left="10.0" right="0.0" top="10.0"/>
+                            </padding>
+                        </VBox>
+                        <VBox fx:id="T2_vbox2" spacing="10">
+                            <TextField fx:id="T2_OClass_Name_TextField" text="" style="-fx-font-size: 24px;"/>
+                            <TextArea fx:id="T2_OClass_Description_TextField" text="" style="-fx-font-size: 14px;"
+                                      prefRowCount="2"/>
+                            <TableView fx:id="T2_tableview1"/>
+                            <HBox spacing="10">
+                                <TextField fx:id="T2_New_PropertyName_TextField" text="" prefWidth="300.0"
+                                           style="-fx-font-size: 12px;"/>
+                                <ComboBox fx:id="T2_New_Property_DataType_Combobox" prefWidth="100.0"
+                                          style="-fx-font-size: 12px;"/>
+                                <Button fx:id="T2_AddProperty_Button" text="Add" onAction="#T2_AddProperty"
+                                        minWidth="80"/>
+                                <Button fx:id="T2_DeleteProperty_Button" text="Delete" onAction="#T2_DeleteProperty"
+                                        minWidth="80"/>
+                                <!--<Button fx:id="T2_SaveProperties_Button" text="Save" onAction="#T2_SaveProperties"
+                                        minWidth="80"/>-->
+                            </HBox>
+                        </VBox>
+                    </HBox>
+                </Tab>
+            </TabPane>
+        </VBox>
+    </children>
+    <padding>
+        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>
+    </padding>
+</Pane>

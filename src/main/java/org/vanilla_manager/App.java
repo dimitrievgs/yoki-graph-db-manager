@@ -1,20 +1,17 @@
 package org.vanilla_manager;
 
 import javafx.application.Application;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.ChoiceBox;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
+import org.vanilla_manager.orientdb.orientdb_connector;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
+import java.io.InputStream;
 
-//руководство по осзданию проекта javafx: https://openjfx.io/openjfx-docs/
+//руководство по созданию проекта javafx: https://openjfx.io/openjfx-docs/
+//javafx - overview: https://docs.oracle.com/javafx/2/ui_controls/overview.htm
 
 /**
  * JavaFX App
@@ -27,22 +24,47 @@ public class App extends Application {
         launch();
     }
 
+    FXMLLoader fxmlLoader;
+
+    orientdb_connector orientdb_connector1;
+
     @Override
     public void start(Stage primaryStage) throws IOException {
-        scene = new Scene(loadFXML("primary"), 640, 480);
+        FXMLLoader loader = GetLoader("primary");
+        scene = new Scene(loader.load(), 640, 480);
+        scene.getStylesheets().add(App.class.getResource("scene.css").toExternalForm());
         primaryStage.setScene(scene);
-        //Initialize();
+        primaryStage.setTitle("Graph DB example");
+        primaryStage.setMaximized(true);
+        addicon(primaryStage);
+
+        orientdb_connector1 = new orientdb_connector();
+        orientdb_connector1.init();
+
+        PrimaryController controller = (PrimaryController) loader.getController();
+        controller.post_initialize(primaryStage, orientdb_connector1);
+
         primaryStage.show();
     }
 
-    static void setRoot(String fxml) throws IOException {
-        scene.setRoot(loadFXML(fxml));
-    }
-
-    private static Parent loadFXML(String fxml) throws IOException {
+    private static FXMLLoader GetLoader(String fxml) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource(fxml + ".fxml"));
-        return fxmlLoader.load();
+        return fxmlLoader;
     }
 
+    static void setRoot(String fxml) throws IOException {
+        scene.setRoot(GetLoader(fxml).load());
+    }
 
+    /********************************************/
+
+    private void addicon(Stage primaryStage) {
+        try {
+            InputStream iconStream = getClass().getResourceAsStream("icons/2250204.png");
+            Image image = new Image(iconStream);
+            primaryStage.getIcons().add(image);
+        } catch (Exception e) {
+            MessageBox.Show(e);
+        }
+    }
 }
