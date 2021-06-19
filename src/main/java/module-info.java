@@ -14,4 +14,6 @@ module org.vanilla_manager {
     opens org.vanilla_manager.orientdb to javafx.fxml;
     exports org.vanilla_manager.OVertex_Controls;
     opens org.vanilla_manager.OVertex_Controls to javafx.fxml;
+    exports org.vanilla_manager.orientdb.oproperty;
+    opens org.vanilla_manager.orientdb.oproperty to javafx.fxml;
 }

@@ -1,4 +1,4 @@
-package org.vanilla_manager.orientdb;
+package org.vanilla_manager.orientdb.oproperty;
 
 import com.orientechnologies.orient.core.metadata.schema.OType;
 
@@ -16,7 +16,8 @@ public class OPropertyCustomAttribute {
         String,
         ComboBox,
         INT,
-        DOUBLE
+        DOUBLE,
+        OClassDependentString
     }
 
     /**
@@ -118,6 +119,6 @@ public class OPropertyCustomAttribute {
 
     public static class RandomGeneratorPath
     {
-        public static OPropertyCustomAttribute attribute = new OPropertyCustomAttribute("Random_Generator_Path", AttributeType.String);
+        public static OPropertyCustomAttribute attribute = new OPropertyCustomAttribute("Random_Generator_Path", AttributeType.OClassDependentString);
     }
 }

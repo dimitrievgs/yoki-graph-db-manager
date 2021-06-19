@@ -17,8 +17,11 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.util.Callback;
 import org.vanilla_manager.MessageBox;
+import org.vanilla_manager.orientdb.oproperty.RandomGeneratorPathButton;
 import org.vanilla_manager.OVertex_Controls.OPropertyTextArea;
 import org.vanilla_manager.OVertex_Controls.OVertexVBox;
+import org.vanilla_manager.orientdb.oproperty.OPropertyCustomAttribute;
+import org.vanilla_manager.orientdb.oproperty.OPropertyNode;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -34,7 +37,7 @@ public class OrientdbJavafx {
     }
 
     //-------------------------------------------------------------------------
-    //---------------------------Graph DB - Loading----------------------------
+    //---------------------------------Loading---------------------------------
 
     public void loadAndShowOVerticesList(TreeTableView<OVertexNode> oVerticesTree, String search_Fiels_Text) {
         List<TreeItem<OVertexNode>> tis = orientdb.readOVertices(search_Fiels_Text);
@@ -129,20 +132,20 @@ public class OrientdbJavafx {
 
         TableColumn<OPropertyNode, String> tv_name_Col = new TableColumn<>("Name");
         tv_name_Col.setMinWidth(100); //150
-        tv_name_Col.setCellValueFactory(cellData -> cellData.getValue().name_Property());
+        tv_name_Col.setCellValueFactory(cellData -> cellData.getValue().nameProperty());
         tv_name_Col.setCellFactory(TextFieldTableCell.forTableColumn());
         //firstNameCol.setCellValueFactory(new PropertyValueFactory<OProperty_Node, String>("name"));
 
         TableColumn<OPropertyNode, String> tv_description_column = new TableColumn<>("Description");
         tv_description_column.setMinWidth(100); //150
-        tv_description_column.setCellValueFactory(cellData -> cellData.getValue().description_Property());
+        tv_description_column.setCellValueFactory(cellData -> cellData.getValue().descriptionProperty());
         tv_description_column.setCellFactory(TextFieldTableCell.forTableColumn());
 
         TableColumn<OPropertyNode, ComboBox> tv_Data_Type_column = new TableColumn<>("Data type");
         tv_Data_Type_column.setMinWidth(100);
         //tv_Data_Type_column.setCellValueFactory(new PropertyValueFactory<OProperty_Node, String>("Data_Type"));
         tv_Data_Type_column.setCellValueFactory(i -> {
-            final ComboBox<String> value = i.getValue().getData_Type();
+            final ComboBox<String> value = i.getValue().getDataType();
             value.prefWidthProperty().bind(i.getTableColumn().widthProperty());
             // binding to constant value
             return Bindings.createObjectBinding(() -> value);
@@ -150,13 +153,23 @@ public class OrientdbJavafx {
 
         TableColumn<OPropertyNode, String> tv_orientdbtype_column = new TableColumn<>("OrientDB Type");
         tv_orientdbtype_column.setMinWidth(5); //100
-        tv_orientdbtype_column.setCellValueFactory(cellData -> cellData.getValue().OrientDBType_Property());
+        tv_orientdbtype_column.setCellValueFactory(cellData -> cellData.getValue().orientdbTypeProperty());
 
-        OProperty_TableView.getColumns().setAll(tv_name_Col, tv_description_column, tv_Data_Type_column, tv_orientdbtype_column);
+        TableColumn<OPropertyNode, RandomGeneratorPathButton> tvRandomGeneratorPathColumn = new TableColumn<>("Random Gen");
+        tvRandomGeneratorPathColumn.setMinWidth(75);
+        //tv_Data_Type_column.setCellValueFactory(new PropertyValueFactory<OProperty_Node, String>("Data_Type"));
+        tvRandomGeneratorPathColumn.setCellValueFactory(i -> {
+            final RandomGeneratorPathButton value = i.getValue().getRandomGeneratorPath();
+            value.prefWidthProperty().bind(i.getTableColumn().widthProperty());
+            // binding to constant value
+            return Bindings.createObjectBinding(() -> value);
+        });
+
+        OProperty_TableView.getColumns().setAll(tv_name_Col, tv_description_column, tv_Data_Type_column, tv_orientdbtype_column, tvRandomGeneratorPathColumn);
     }
 
     //-------------------------------------------------------------------------
-    //---------------------------Graph DB - OVertex----------------------------
+    //---------------------------------OVertex---------------------------------
 
     private int Get_TreeItem_Index_As_Child(TreeItem ti) {
         //root.getChildren().get(0).getParent();
@@ -234,14 +247,12 @@ public class OrientdbJavafx {
         Dialog<New_OVertex> dialog = new Dialog<>();
         dialog.setTitle(titleTxt);
         dialog.setHeaderText("This is a custom dialog. Enter info and \n" +
-                "press Okay (or click title bar 'X' for cancel).");
+                "press Ok (or click title bar 'X' for cancel).");
         dialog.setResizable(true);
 
         Label label1 = new Label("Name: ");
-        //Label label2 = new Label("Phone: ");
         TextField text1 = new TextField();
         text1.setText(new_Record_Name);
-        //TextField text2 = new TextField();
 
         TreeTableView<OClassNode> OClass_treetableview = new TreeTableView<>();
 
@@ -252,17 +263,14 @@ public class OrientdbJavafx {
         ObservableList<javafx.scene.Node> vbox2_children = vbox2.getChildren();
         vbox2_children.add(label1);
         vbox2_children.add(text1);
-        //box2_children.add(label2);
-        //vbox2_children.add(text2);
         hbox_children.add(vbox2);
         dialog.getDialogPane().setContent(hbox);
 
         hbox.setSpacing(10);
-        //        vbox0.prefWidthProperty().bind(stage.widthProperty());
 
         loadAndShowOClassesTree(OClass_treetableview, oPropertiesTable, true, false);
 
-        ButtonType buttonTypeOk = new ButtonType("Okay", ButtonBar.ButtonData.OK_DONE);
+        ButtonType buttonTypeOk = new ButtonType("Ok", ButtonBar.ButtonData.OK_DONE);
         dialog.getDialogPane().getButtonTypes().add(buttonTypeOk);
 
         dialog.setResultConverter(new Callback<ButtonType, New_OVertex>() {
@@ -395,7 +403,7 @@ public class OrientdbJavafx {
                         for (javafx.scene.Node node : inner_vbox_children) {
                             if (node instanceof OPropertyTextArea) {
                                 OPropertyTextArea op_textarea = (OPropertyTextArea) node;
-                                OProperty node_property = op_textarea.get_OProperty();
+                                OProperty node_property = op_textarea.getOProperty();
                                 String node_property_name = node_property.getName();
                                 if (oClass.existsProperty(node_property_name)) {
                                     String s = op_textarea.getText();
@@ -431,9 +439,9 @@ public class OrientdbJavafx {
                 Collection<OProperty> Properties = orientdb.getOProperties(oVertex);
                 for (OProperty property : Properties) {
                     String property_name = property.getName();
-                    String Data_Type = property.getCustom(OPropertyCustomAttribute.DataType.attribute.getName());
+                    String dataType = property.getCustom(OPropertyCustomAttribute.DataType.attribute.getName());
                     Object value = oVertex.getProperty(property_name);
-                    if (Data_Type != null && Data_Type.equals(OPropertyCustomAttribute.DataType.textPropertyType)) {
+                    if (dataType != null && dataType.equals(OPropertyCustomAttribute.DataType.textPropertyType)) {
                         Label label = new Label();
                         label.setText(property_name);
                         String s_value = (String) value;
@@ -450,7 +458,7 @@ public class OrientdbJavafx {
     }
 
     //-------------------------------------------------------------------------
-    //----------------------------Graph DB - Classes---------------------------
+    //----------------------------------OClass---------------------------------
 
     /*private void Erase_OClass_Text_Field() {
         T2_RecordName.setText("");
@@ -489,6 +497,9 @@ public class OrientdbJavafx {
         }
     }
 
+    /**
+     * may be it's better to incorporate it in oPropertiesTable
+     */
     private OClass Last_Read_OClass = null;
 
     public void readPropertiesFromOClass(TreeTableView oClassesTree, TableView<OPropertyNode> oPropertiesTable,
@@ -507,7 +518,7 @@ public class OrientdbJavafx {
 
                 if (properties != null) {
                     for (OProperty property : properties) {
-                        data_for_table.add(new OPropertyNode(property));
+                        data_for_table.add(new OPropertyNode(oClass, property));
                     }
 
                     T2_OClass_Name_TextField.setText(oClass.getName());
@@ -515,7 +526,6 @@ public class OrientdbJavafx {
                     oPropertiesTable.setItems(data_for_table);
 
                     Last_Read_OClass = oClass;
-                    //T2_htmleditor1.setHtmlText(properties.get(1));
                 }
             }
         } catch (Exception e) {
@@ -590,8 +600,8 @@ public class OrientdbJavafx {
         //check if we have read already some OClass once and that we haven't deleted it yet
         String OProperty_Name = T2_New_PropertyName_TextField.getText();
         if (OProperty_Name.length() > 0 && Last_Read_OClass != null && orientdb.existsOClassExt(Last_Read_OClass)) {
-            OPropertyNode property_node = new OPropertyNode(OProperty_Name, "",
-                    T2_New_Property_DataType_Combobox.getSelectionModel().getSelectedItem().toString());
+            OPropertyNode property_node = new OPropertyNode(Last_Read_OClass, OProperty_Name, "",
+                    T2_New_Property_DataType_Combobox.getSelectionModel().getSelectedItem().toString(), "");
             oPropertiesTable.getItems().add(property_node);
         }
     }

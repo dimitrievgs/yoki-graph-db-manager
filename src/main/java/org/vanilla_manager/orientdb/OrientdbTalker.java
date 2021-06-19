@@ -31,6 +31,8 @@ import com.orientechnologies.orient.core.sql.executor.OResultSet;
 import javafx.collections.ObservableList;
 import javafx.scene.control.TreeItem;
 import org.vanilla_manager.MessageBox;
+import org.vanilla_manager.orientdb.oproperty.OPropertyCustomAttribute;
+import org.vanilla_manager.orientdb.oproperty.OPropertyNode;
 
 import java.util.*;
 
@@ -157,8 +159,9 @@ public class OrientdbTalker {
     }
 
     //https://orientdb.com/docs/3.0.x/general/Types.html
+    //https://github.com/orientechnologies/orientdb/issues/3887
     public List<OVertex> findOVertices(ODatabaseSession db, String Name, String Classname) {
-        String query = "SELECT FROM " + Classname + " where Name = ?";
+        String query = "SELECT FROM `" + Classname + "` WHERE Name = ?";
         OResultSet rs = db.query(query, Name);
         List<OVertex> result = new ArrayList<OVertex>();
         while (rs.hasNext()) {
@@ -493,32 +496,34 @@ public class OrientdbTalker {
                     OPropertyNode Property_Node = table_data.get(i);
                     OProperty property = Property_Node.getOProperty();
 
-                    String new_OProperty_Name = Property_Node.getName();
-                    String new_OProperty_Description = Property_Node.getDescription();
-                    String new_OProperty_Data_Type = Property_Node.getData_Type_Value();
+                    String newName = Property_Node.getName();
+                    String newDescription = Property_Node.getDescription();
+                    String newDataType = Property_Node.getDataTypeValue();
+                    String newRandomGeneratorPath = Property_Node.getRandomGeneratorPathValue();
 
                     //check if new property
                     if (property == null) {
-                        OProperty old_property_with_same_name = oClass.getProperty(new_OProperty_Name);
+                        OProperty old_property_with_same_name = oClass.getProperty(newName);
                         if (old_property_with_same_name != null) {
                             OClass Owner_Class = old_property_with_same_name.getOwnerClass();
                             //it means we just want to delete old one and create new one with the same name. For example, to change OType which is impossible to do in other way.
                             if (Owner_Class == oClass) { //otherwise it will not allow to remove from this property
-                                oClass.dropProperty(new_OProperty_Name);
+                                oClass.dropProperty(newName);
                                 old_properties_list.remove(old_property_with_same_name);
                             }
                         }
-                        OType oType = OPropertyCustomAttribute.DataType.getOType(new_OProperty_Data_Type);
-                        property = oClass.createProperty(new_OProperty_Name, oType);
+                        OType oType = OPropertyCustomAttribute.DataType.getOType(newDataType);
+                        property = oClass.createProperty(newName, oType);
                         Property_Node.setOProperty(property);
-                        Property_Node.setOrientDBType(oType.toString());
+                        Property_Node.setOrientdbType(oType.toString());
                     } else {
-                        property.setName(new_OProperty_Name);
+                        property.setName(newName);
                         old_properties_list.remove(property);
                     }
 
-                    property.setDescription(new_OProperty_Description);
-                    property.setCustom(OPropertyCustomAttribute.DataType.attribute.getName(), new_OProperty_Data_Type);
+                    property.setDescription(newDescription);
+                    property.setCustom(OPropertyCustomAttribute.DataType.attribute.getName(), newDataType);
+                    property.setCustom(OPropertyCustomAttribute.RandomGeneratorPath.attribute.getName(), newRandomGeneratorPath);
 
                     //property.setType(OProperty_Custom_Attribute.Data_Type.Get_OType(new_data_type));
                     //Orientdb just doesn't allow to change OType after property creation! (at least in this way)
@@ -543,15 +548,6 @@ public class OrientdbTalker {
                 List<String> result = new ArrayList<>();
 
                 Collection<OProperty> props1 = oClass.properties();
-                Collection<OProperty> props2 = oClass.declaredProperties();
-                Collection<OProperty> props3 = oClass.getIndexedProperties();
-
-                /*for (String propertyName : PropertiesNames) {
-
-                    String value = oClass.getProperty(propertyName);
-                    if (value == null) value = "";
-                    result.add(value);
-                }*/
                 return props1;
             } else return null;
         } catch (Exception e) {

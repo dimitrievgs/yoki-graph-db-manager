@@ -16,6 +16,8 @@ import javafx.stage.Stage;
 import javafx.scene.web.HTMLEditor;
 import javafx.stage.WindowEvent;
 import org.vanilla_manager.orientdb.*;
+import org.vanilla_manager.orientdb.oproperty.OPropertyCustomAttribute;
+import org.vanilla_manager.orientdb.oproperty.OPropertyNode;
 
 public class PrimaryController {
     public HBox T1_RecordName_parent;
