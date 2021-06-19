@@ -5,7 +5,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
-import org.vanilla_manager.orientdb.orientdb_connector;
+import org.vanilla_manager.orientdb.OrientdbJavafx;
+import org.vanilla_manager.orientdb.OrientdbTalker;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -26,7 +27,7 @@ public class App extends Application {
 
     FXMLLoader fxmlLoader;
 
-    orientdb_connector orientdb_connector1;
+    OrientdbJavafx orientdbJavafx;
 
     @Override
     public void start(Stage primaryStage) throws IOException {
@@ -38,11 +39,10 @@ public class App extends Application {
         primaryStage.setMaximized(true);
         addicon(primaryStage);
 
-        orientdb_connector1 = new orientdb_connector();
-        orientdb_connector1.init();
+        orientdbJavafx = new OrientdbJavafx();
 
         PrimaryController controller = (PrimaryController) loader.getController();
-        controller.post_initialize(primaryStage, orientdb_connector1);
+        controller.postInitialize(primaryStage, orientdbJavafx);
 
         primaryStage.show();
     }

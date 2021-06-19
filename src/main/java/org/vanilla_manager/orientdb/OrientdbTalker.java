@@ -34,7 +34,7 @@ import org.vanilla_manager.MessageBox;
 
 import java.util.*;
 
-public class orientdb_connector {
+public class OrientdbTalker {
     String orientdb_path = "embedded:D:/orient_dbs/"; //"embedded:/tmp/"
     String db_name = "vanilla_db";
     String user_name = "admin";
@@ -52,10 +52,10 @@ public class orientdb_connector {
      */
     OVertex Root_Vertex;
 
-    public orientdb_connector() {
+    public OrientdbTalker() {
     }
 
-    public OrientDB orientDB;
+    private OrientDB orientDB;
 
     //-------------------------------------------------------------------------
     //--------------------------Init & Preparation-----------------------------
@@ -71,20 +71,18 @@ public class orientdb_connector {
                 orientDB.create(db_name, ODatabaseType.PLOCAL);
             }
 
-            Create_Base_Classes();
-            Find_Root_Record();
+            createBaseOClasses();
+            findRootOVertex();
         } catch (Exception e) {
             MessageBox.Show(e);
         }
     }
 
-    private void Create_Base_Classes() {
-        try (ODatabaseSession db = orientDB.open(db_name, user_name, password);) {
+    private void createBaseOClasses() {
+        try (ODatabaseSession db = openDB();) {
             OClass V_OClass = db.getClass(Vertex_Class_Name);
             OClass E_OClass = db.getClass(Edge_Class_Name);
             OSchema schema = db.getMetadata().getSchema();
-
-            //db.createClassIfNotExist()
 
             if (V_OClass == null) {
                 //db.createEdgeClass();
@@ -99,71 +97,26 @@ public class orientdb_connector {
 
             OClass Route_OClass = db.createClassIfNotExist(Edge_Child_Page_Class, Edge_Class_Name);
 
-            Create_Other_Test_Classes(db);
+            //Create_Other_Test_Classes(db);
         } catch (Exception e) {
             MessageBox.Show(e);
         }
     }
 
-    String Location_Class_name = "Location";
-    String Route_Class_name = "Route";
-
-    String Campaign_Manager_Type_Property_Attribute_Name = "CM_Type";
-    String Random_Generator_Path_Property_Attribute_Name = "Random_Generator_Path";
-
-    private void Create_Other_Test_Classes(ODatabaseSession db) {
-        OClass Location_OClass = db.createClassIfNotExist(Location_Class_name, Vertex_Class_Name);
-        OClass Route_OClass = db.createClassIfNotExist(Route_Class_name, Edge_Class_Name);
-
-        String Settlement_OClass_name = "Settlement";
-        OClass Settlement_OClass = db.createClassIfNotExist(Settlement_OClass_name, Location_Class_name);
-        String Village_OClass_name = "Village";
-        String City_OClass_name = "City";
-        OClass Village_OClass = db.createClassIfNotExist(Village_OClass_name, Settlement_OClass_name);
-        OClass City_OClass = db.createClassIfNotExist(City_OClass_name, Settlement_OClass_name);
-        String Small_City_name = "Town";
-        String Big_City_name = "Metropolis";
-        OClass Small_City_OClass = db.createClassIfNotExist(Small_City_name, City_OClass_name);
-        OClass Big_City_OClass = db.createClassIfNotExist(Big_City_name, City_OClass_name);
-        String Metropolis_Propery_1_Name = "M_Property";
-        String Metropolis_Propery_2_Name = "M_Property2";
-        String Metropolis_Propery_3_Name = "M_Property5";
-        if (Big_City_OClass.existsProperty(Metropolis_Propery_1_Name) == false) {
-            OProperty prop1 = Big_City_OClass.createProperty(Metropolis_Propery_1_Name, OType.STRING);
-            //prop1.setDescription(Text_Property_Type);
-        }
-        if (Big_City_OClass.existsProperty(Metropolis_Propery_2_Name) == false) {
-            OProperty prop2 = Big_City_OClass.createProperty(Metropolis_Propery_2_Name, OType.INTEGER);
-            //prop2.setDescription(Image_Property_Type);
-        }
-        if (Big_City_OClass.existsProperty(Metropolis_Propery_3_Name) == false) {
-            OProperty prop3 = Big_City_OClass.createProperty(Metropolis_Propery_3_Name, OType.DOUBLE);
-            //prop3.setDescription(Map_Property_Type);
-            prop3.setCustom(OProperty_Custom_Attribute.Data_Type.Attribute.getName(), OProperty_Custom_Attribute.Data_Type.Text_Property_Type);
-            prop3.setCustom(OProperty_Custom_Attribute.Random_Generator_Path.Attribute.getName(), "");
-            int t = 1;
-        }
-
-        String Road_OClass_name = "Road";
-        String Trail_OClass_name = "Trail";
-        String Track_OClass_name = "Track";
-        OClass Road_OClass = db.createClassIfNotExist(Road_OClass_name, Route_Class_name);
-        OClass Trail_OClass = db.createClassIfNotExist(Trail_OClass_name, Route_Class_name);
-        OClass Track_OClass = db.createClassIfNotExist(Track_OClass_name, Route_Class_name);
-        String Highway_OClass_name = "Highway";
-        String Crossroad_OClass_name = "Crossroad";
-        OClass Highway_OClass = db.createClassIfNotExist(Highway_OClass_name, Road_OClass_name);
-        OClass Crossroad_OClass = db.createClassIfNotExist(Crossroad_OClass_name, Road_OClass_name);
+    private void findRootOVertex() {
+        Root_Vertex = addOVertex(Root_Vertex_Name, Vertex_Class_Name).getOVertex();
     }
 
-    private void Find_Root_Record() {
-        Root_Vertex = Add_OVertex(Root_Vertex_Name, Vertex_Class_Name).getOVertex();
+    public ODatabaseSession openDB()
+    {
+        ODatabaseSession db = orientDB.open(db_name, user_name, password);
+        return db;
     }
 
     //-------------------------------------------------------------------------
     //-------------------------------Get & Find--------------------------------
 
-    public static String Get_OVertex_Name(OVertex t) {
+    public static String getOVertexName(OVertex t) {
         return t.getProperty("Name").toString();
     }
 
@@ -173,7 +126,7 @@ public class orientdb_connector {
      * @param t
      * @return
      */
-    public static OClass Get_OElement_OClass(OElement t) {
+    public static OClass getOElementOClass(OElement t) {
         var st = t.getSchemaType();
         if (st.isPresent() == true) {
             OClass oClass = st.get();
@@ -183,28 +136,28 @@ public class orientdb_connector {
         }
     }
 
-    public OClass Get_OElement_OClass_Ext(OElement t) {
-        try (ODatabaseSession db = orientDB.open(db_name, user_name, password);) {
-            return Get_OElement_OClass(t);
+    public OClass getOElementOClassExt(OElement t) {
+        try (ODatabaseSession db = openDB();) {
+            return getOElementOClass(t);
         } catch (Exception e) {
             MessageBox.Show(e);
         }
         return null;
     }
 
-    public OElement Find_OElement(ODatabaseSession db, ORID rid) {
+    public OElement findOElement(ODatabaseSession db, ORID rid) {
         //ORecordId id = new ORecordId(rid);
         return db.getRecord(rid);
     }
 
-    public OVertex Find_OVertex(ODatabaseSession db, String Name, String Classname) {
-        List<OVertex> result = Find_OVertices(db, Name, Classname);
+    public OVertex findOVertex(ODatabaseSession db, String Name, String Classname) {
+        List<OVertex> result = findOVertices(db, Name, Classname);
         if (result.size() > 0) return result.get(0);
         else return null;
     }
 
     //https://orientdb.com/docs/3.0.x/general/Types.html
-    public List<OVertex> Find_OVertices(ODatabaseSession db, String Name, String Classname) {
+    public List<OVertex> findOVertices(ODatabaseSession db, String Name, String Classname) {
         String query = "SELECT FROM " + Classname + " where Name = ?";
         OResultSet rs = db.query(query, Name);
         List<OVertex> result = new ArrayList<OVertex>();
@@ -217,7 +170,7 @@ public class orientdb_connector {
         return result;
     }
 
-    public List<OEdge> Find_OEdges(ODatabaseSession db, String Classname, String Name) {
+    public List<OEdge> findOEdges(ODatabaseSession db, String Classname, String Name) {
         String query = "SELECT FROM " + Classname + " where Name = ?";
         OResultSet rs = db.query(query, Name);
         List<OEdge> result = new ArrayList<OEdge>();
@@ -230,7 +183,7 @@ public class orientdb_connector {
         return result;
     }
 
-    public OVertex Get_Parent_OVertex(OVertex t) {
+    public OVertex getParentOVertex(OVertex t) {
         Iterator<OVertex> rs = t.getVertices(ODirection.IN, Edge_Child_Page_Class).iterator();
         List<OVertex> result = new ArrayList<OVertex>();
         while (rs.hasNext()) {
@@ -241,7 +194,7 @@ public class orientdb_connector {
         else return null;
     }
 
-    public List<OVertex> Get_Child_OVertices(OVertex t) {
+    public List<OVertex> getChildOVertices(OVertex t) {
         Iterator<OVertex> rs = t.getVertices(ODirection.OUT, Edge_Child_Page_Class).iterator();
         List<OVertex> result = new ArrayList<OVertex>();
         while (rs.hasNext()) {
@@ -254,12 +207,12 @@ public class orientdb_connector {
     //-------------------------------------------------------------------------
     //-------------------Manipulations - OVertices & OEdges--------------------
 
-    public final class New_OVertex_Result {
+    public final class NewOVertexResult {
         private final boolean created;
         private final OVertex Vertex;
         private final OClass oClass;
 
-        public New_OVertex_Result(boolean _created, OVertex _value, OClass _oClass) {
+        public NewOVertexResult(boolean _created, OVertex _value, OClass _oClass) {
             this.created = _created;
             this.Vertex = _value;
             this.oClass = _oClass;
@@ -278,19 +231,19 @@ public class orientdb_connector {
         }
     }
 
-    public New_OVertex_Result Add_OVertex(String Name, String Class_Name) {
-        return Add_Child_OVertex(Name, Class_Name, null);
+    public NewOVertexResult addOVertex(String Name, String Class_Name) {
+        return addChildOVertex(Name, Class_Name, null);
     }
 
     //change from class_name to OClass itself
-    public New_OVertex_Result Add_Child_OVertex(String Name, String Class_Name, OVertex Parent) {
+    public NewOVertexResult addChildOVertex(String Name, String Class_Name, OVertex Parent) {
         boolean created = false;
         OVertex oVertex = null;
         OClass oClass = null;
         if (Name != "") {
-            try (ODatabaseSession db = orientDB.open(db_name, user_name, password);) {
+            try (ODatabaseSession db = openDB();) {
                 boolean changed = false;
-                oVertex = Find_OVertex(db, Name, Class_Name);
+                oVertex = findOVertex(db, Name, Class_Name);
                 if (oVertex == null) {
                     db.begin();
                     oVertex = db.newVertex(Class_Name);
@@ -302,7 +255,7 @@ public class orientdb_connector {
                 }
 
                 if (Parent != null) {
-                    OVertex parent = Get_Parent_OVertex(oVertex);
+                    OVertex parent = getParentOVertex(oVertex);
                     if (parent == null) {
                         Parent.addEdge(oVertex, Edge_Child_Page_Class);
                         changed = true;
@@ -314,22 +267,22 @@ public class orientdb_connector {
                     db.commit();
                 }
 
-                oClass = Get_OElement_OClass(oVertex);
+                oClass = getOElementOClass(oVertex);
             } catch (Exception e) {
                 MessageBox.Show(e);
             }
         }
-        return new New_OVertex_Result(created, oVertex, oClass);
+        return new NewOVertexResult(created, oVertex, oClass);
     }
 
     String OVertex_Name_Extra_Char = "_";
 
-    public New_OVertex_Result Duplicate_OVertex(OVertex prototype) {
-        try (ODatabaseSession db = orientDB.open(db_name, user_name, password);) {
+    public NewOVertexResult duplicateOVertex(OVertex prototype) {
+        try (ODatabaseSession db = openDB();) {
             if (prototype != null) {
                 db.begin();
                 OVertex oVertex2 = null;
-                OClass oClass = Get_OElement_OClass(prototype);
+                OClass oClass = getOElementOClass(prototype);
                 if (oClass != null) {
                     String Class_name = oClass.getName();
                     oVertex2 = db.newVertex(Class_name);
@@ -346,7 +299,7 @@ public class orientdb_connector {
                 }
                 oVertex2.save();
                 db.commit();
-                return new New_OVertex_Result(true, oVertex2, oClass); //String name, OVertex _oVertex, OClass _oClass, List<OVertex_Page_Node> _Childs_Nodes
+                return new NewOVertexResult(true, oVertex2, oClass); //String name, OVertex _oVertex, OClass _oClass, List<OVertex_Page_Node> _Childs_Nodes
             }
             return null;
         } catch (Exception e) {
@@ -355,8 +308,8 @@ public class orientdb_connector {
         return null;
     }
 
-    public void Delete_OElement(ORID RID) {
-        try (ODatabaseSession db = orientDB.open(db_name, user_name, password);) {
+    public void deleteOElement(ORID RID) {
+        try (ODatabaseSession db = openDB();) {
             db.delete(RID);
             db.commit();
         } catch (Exception e) {
@@ -367,30 +320,30 @@ public class orientdb_connector {
     //-------------------------------------------------------------------------
     //------------------------Manipulations - OClasses-------------------------
 
-    private boolean Exists_OClass(ODatabaseSession db, String OClass_Name) {
+    private boolean existsOClass(ODatabaseSession db, String OClass_Name) {
         OSchema schema = db.getMetadata().getSchema();
         return schema.existsClass(OClass_Name);
     }
 
-    public boolean Exists_OClass_Ext(OClass oClass) {
-        try (ODatabaseSession db = orientDB.open(db_name, user_name, password);) {
-            return Exists_OClass(db, oClass.getName());
+    public boolean existsOClassExt(OClass oClass) {
+        try (ODatabaseSession db = openDB();) {
+            return existsOClass(db, oClass.getName());
         } catch (Exception e) {
             MessageBox.Show(e);
         }
         return false;
     }
 
-    private OClass Find_OClass(ODatabaseSession db, String OClass_Name) {
+    private OClass findOClass(ODatabaseSession db, String OClass_Name) {
         OSchema schema = db.getMetadata().getSchema();
         return schema.getClass(OClass_Name);
     }
 
-    public final class New_OClass_Result {
+    public final class NewOClassResult {
         private final boolean created;
         private final OClass oClass;
 
-        public New_OClass_Result(boolean _created, OClass _oClass) {
+        public NewOClassResult(boolean _created, OClass _oClass) {
             this.created = _created;
             this.oClass = _oClass;
         }
@@ -404,12 +357,12 @@ public class orientdb_connector {
         }
     }
 
-    public New_OClass_Result Add_OClass(String OClass_Name, OClass Parent) {
+    public NewOClassResult addOClass(String OClass_Name, OClass Parent) {
         boolean created = false;
         OClass oClass = null;
         if (OClass_Name != "") {
-            try (ODatabaseSession db = orientDB.open(db_name, user_name, password);) {
-                oClass = Find_OClass(db, OClass_Name);
+            try (ODatabaseSession db = openDB();) {
+                oClass = findOClass(db, OClass_Name);
                 if (oClass == null) {
                     oClass = db.createClassIfNotExist(OClass_Name, Parent.getName());
                     created = true;
@@ -418,14 +371,14 @@ public class orientdb_connector {
                 MessageBox.Show(e);
             }
         }
-        return new New_OClass_Result(created, oClass);
+        return new NewOClassResult(created, oClass);
     }
 
     String OClass_Name_Extra_Char = "_";
 
-    public New_OClass_Result Duplicate_OClass(OClass prototype) {
-        New_OClass_Result result = null;
-        try (ODatabaseSession db = orientDB.open(db_name, user_name, password);) {
+    public NewOClassResult duplicateOClass(OClass prototype) {
+        NewOClassResult result = null;
+        try (ODatabaseSession db = openDB();) {
             if (prototype != null) {
                 String new_OClass2_name = prototype.getName();
                 do {
@@ -440,7 +393,7 @@ public class orientdb_connector {
                     if (property.getOwnerClass() == prototype)
                         oClass2.createProperty(property.getName(), property.getType());
                 }
-                result = new New_OClass_Result(true, oClass2); //String name, OVertex _oVertex, OClass _oClass, List<OVertex_Page_Node> _Childs_Nodes
+                result = new NewOClassResult(true, oClass2); //String name, OVertex _oVertex, OClass _oClass, List<OVertex_Page_Node> _Childs_Nodes
             }
         } catch (Exception e) {
             MessageBox.Show(e);
@@ -448,7 +401,7 @@ public class orientdb_connector {
         return result;
     }
 
-    public void Remove_OClass(ODatabaseSession db, OClass oClass) {
+    public void removeOClass(ODatabaseSession db, OClass oClass) {
         OSchema schema = db.getMetadata().getSchema();
         List<OClass> oClasses = collect_sub_classes_from_bottom_to_top(oClass);
         for (OClass oClass1 : oClasses)
@@ -473,9 +426,9 @@ public class orientdb_connector {
         return oClasses;
     }
 
-    public boolean Remove_OClass_Ext(OClass oClass) {
-        try (ODatabaseSession db = orientDB.open(db_name, user_name, password);) {
-            Remove_OClass(db, oClass);
+    public boolean removeOClassExt(OClass oClass) {
+        try (ODatabaseSession db = openDB();) {
+            removeOClass(db, oClass);
             //return schema.existsClass(oClass.getName());
         } catch (Exception e) {
             MessageBox.Show(e);
@@ -486,8 +439,8 @@ public class orientdb_connector {
     //-------------------------------------------------------------------------
     //------------------------------OProperties--------------------------------
 
-    public boolean Write_Record_Properties(OElement el, List<String> PropertiesNames, List<String> values) {
-        try (ODatabaseSession db = orientDB.open(db_name, user_name, password);) {
+    public boolean writeOElementOProperties(OElement el, List<String> PropertiesNames, List<String> values) {
+        try (ODatabaseSession db = openDB();) {
             //OElement el = fetch_Record(db, RID);
             if (el != null) {
                 db.begin();
@@ -507,8 +460,8 @@ public class orientdb_connector {
         return false;
     }
 
-    public List<String> Read_Record_Properties(OElement el, List<String> PropertiesNames) {
-        try (ODatabaseSession db = orientDB.open(db_name, user_name, password);) {
+    public List<String> readOElementOProperties(OElement el, List<String> PropertiesNames) {
+        try (ODatabaseSession db = openDB();) {
             if (el != null) {
                 db.begin();
                 List<String> result = new ArrayList<>();
@@ -525,8 +478,8 @@ public class orientdb_connector {
         return null;
     }
 
-    public ObservableList<OProperty_Node> Write_OClass_Properties(OClass oClass, String new_Name, String new_Description, ObservableList<OProperty_Node> table_data) {
-        try (ODatabaseSession db = orientDB.open(db_name, user_name, password);) {
+    public ObservableList<OPropertyNode> writeOClassOProperties(OClass oClass, String new_Name, String new_Description, ObservableList<OPropertyNode> table_data) {
+        try (ODatabaseSession db = openDB();) {
             //OElement el = fetch_Record(db, RID);
             if (oClass != null) {
                 oClass.setName(new_Name); //it needs to be changed under the ODatabaseSession, but outside of db.begin ... db.commit
@@ -537,7 +490,7 @@ public class orientdb_connector {
                 //db.begin();
                 int PropertiesCount = table_data.size();
                 for (int i = 0; i < PropertiesCount; i++) {
-                    OProperty_Node Property_Node = table_data.get(i);
+                    OPropertyNode Property_Node = table_data.get(i);
                     OProperty property = Property_Node.getOProperty();
 
                     String new_OProperty_Name = Property_Node.getName();
@@ -555,7 +508,7 @@ public class orientdb_connector {
                                 old_properties_list.remove(old_property_with_same_name);
                             }
                         }
-                        OType oType = OProperty_Custom_Attribute.Data_Type.Get_OType(new_OProperty_Data_Type);
+                        OType oType = OPropertyCustomAttribute.DataType.getOType(new_OProperty_Data_Type);
                         property = oClass.createProperty(new_OProperty_Name, oType);
                         Property_Node.setOProperty(property);
                         Property_Node.setOrientDBType(oType.toString());
@@ -565,7 +518,7 @@ public class orientdb_connector {
                     }
 
                     property.setDescription(new_OProperty_Description);
-                    property.setCustom(OProperty_Custom_Attribute.Data_Type.Attribute.getName(), new_OProperty_Data_Type);
+                    property.setCustom(OPropertyCustomAttribute.DataType.attribute.getName(), new_OProperty_Data_Type);
 
                     //property.setType(OProperty_Custom_Attribute.Data_Type.Get_OType(new_data_type));
                     //Orientdb just doesn't allow to change OType after property creation! (at least in this way)
@@ -583,8 +536,8 @@ public class orientdb_connector {
         return null;
     }
 
-    public Collection<OProperty> Read_OClass_Properties(OClass oClass) {
-        try (ODatabaseSession db = orientDB.open(db_name, user_name, password);) {
+    public Collection<OProperty> readOClassOProperties(OClass oClass) {
+        try (ODatabaseSession db = openDB();) {
             if (oClass != null) {
                 db.begin();
                 List<String> result = new ArrayList<>();
@@ -607,9 +560,9 @@ public class orientdb_connector {
         return null;
     }
 
-    public Collection<OProperty> Get_Properties(OElement t) {
-        try (ODatabaseSession db = orientDB.open(db_name, user_name, password);) {
-            OClass oClass = Get_OElement_OClass(t);
+    public Collection<OProperty> getOProperties(OElement t) {
+        try (ODatabaseSession db = openDB();) {
+            OClass oClass = getOElementOClass(t);
             Collection<OProperty> Properties = oClass.properties();
             return Properties;
         } catch (Exception e) {
@@ -621,8 +574,8 @@ public class orientdb_connector {
     //-------------------------------------------------------------------------
     //---------------------------Read DB contents------------------------------
 
-    public List<TreeItem<OVertex_Node>> Read_Vertices(String Search_String) {
-        try (ODatabaseSession db = orientDB.open(db_name, user_name, password);) {
+    public List<TreeItem<OVertexNode>> readOVertices(String Search_String) {
+        try (ODatabaseSession db = openDB();) {
             String lc_Search_String = Search_String.toLowerCase();
 
             String query = "";
@@ -631,14 +584,14 @@ public class orientdb_connector {
             else query = "SELECT from V WHERE Name.toLowerCase() LIKE '%" + lc_Search_String + "%'"; //"SELECT from V"
             OResultSet rs = db.query(query, "");
             List<OVertex> vertices = new ArrayList<OVertex>();
-            List<TreeItem<OVertex_Node>> tis = new ArrayList<TreeItem<OVertex_Node>>();
+            List<TreeItem<OVertexNode>> tis = new ArrayList<TreeItem<OVertexNode>>();
             while (rs.hasNext()) {
                 OResult item = rs.next();
                 if (item.isVertex() == true) {
                     OVertex el = (OVertex) item.toElement();
-                    OClass oClass = orientdb_connector.Get_OElement_OClass(el);
-                    OVertex_Node ee = new OVertex_Node(el, oClass);
-                    TreeItem<OVertex_Node> ti = new TreeItem<OVertex_Node>(ee);
+                    OClass oClass = OrientdbTalker.getOElementOClass(el);
+                    OVertexNode ee = new OVertexNode(el, oClass);
+                    TreeItem<OVertexNode> ti = new TreeItem<OVertexNode>(ee);
                     tis.add(ti);
 
                     vertices.add(el);
@@ -654,9 +607,9 @@ public class orientdb_connector {
         return null;
     }
 
-    public OVertex_Node Read_Child_OVertices(String Search_String) {
-        try (ODatabaseSession db = orientDB.open(db_name, user_name, password);) {
-            OVertex_Node super_node = Get_Child_OVertices_Hierarchy(Root_Vertex, Search_String).getValue();
+    public OVertexNode readChildOVertices(String Search_String) {
+        try (ODatabaseSession db = openDB();) {
+            OVertexNode super_node = getChildOVerticesHierarchy(Root_Vertex, Search_String).getValue();
             return super_node;
         } catch (Exception e) {
             MessageBox.Show(e);
@@ -669,26 +622,26 @@ public class orientdb_connector {
     /**
      * Recursive method
      */
-    private Get_Child_OVertices_Hierarchy_result Get_Child_OVertices_Hierarchy(OVertex parent_vertex, String Search_String) {
-        List<OVertex> child_vertices = Get_Child_OVertices(parent_vertex);
-        List<OVertex_Node> child_nodes = new ArrayList<>();
+    private getChildOVerticesHierarchyResult getChildOVerticesHierarchy(OVertex parent_vertex, String Search_String) {
+        List<OVertex> child_vertices = getChildOVertices(parent_vertex);
+        List<OVertexNode> child_nodes = new ArrayList<>();
         for (OVertex child_vertex : child_vertices) {
-            Get_Child_OVertices_Hierarchy_result child_node_w_result = Get_Child_OVertices_Hierarchy(child_vertex, Search_String);
+            getChildOVerticesHierarchyResult child_node_w_result = getChildOVerticesHierarchy(child_vertex, Search_String);
             if (child_node_w_result.getResult() == true)
                 child_nodes.add(child_node_w_result.getValue());
         }
-        String name = Get_OVertex_Name(parent_vertex);
-        OClass oCLass = Get_OElement_OClass(parent_vertex);
+        String name = getOVertexName(parent_vertex);
+        OClass oCLass = getOElementOClass(parent_vertex);
         //either the name is suitable, or the name of one of the heirs is suitable
         boolean contains = Search_String.length() == 0 || name.contains(Search_String) || child_nodes.size() > 0;
-        return new Get_Child_OVertices_Hierarchy_result(contains, new OVertex_Node(parent_vertex, oCLass, child_nodes));
+        return new getChildOVerticesHierarchyResult(contains, new OVertexNode(parent_vertex, oCLass, child_nodes));
     }
 
-    final class Get_Child_OVertices_Hierarchy_result {
+    final class getChildOVerticesHierarchyResult {
         private final boolean result;
-        private final OVertex_Node value;
+        private final OVertexNode value;
 
-        public Get_Child_OVertices_Hierarchy_result(boolean first, OVertex_Node second) {
+        public getChildOVerticesHierarchyResult(boolean first, OVertexNode second) {
             this.result = first;
             this.value = second;
         }
@@ -697,28 +650,28 @@ public class orientdb_connector {
             return result;
         }
 
-        public OVertex_Node getValue() {
+        public OVertexNode getValue() {
             return value;
         }
     }
 
-    public OClass_Node Read_Classes(boolean Read_V_OClasses, boolean Read_E_OClasses) {
-        try (ODatabaseSession db = orientDB.open(db_name, user_name, password);) {
-            List<OClass_Node> Classes_Nodes = new ArrayList<>();
+    public OClassNode readOClasses(boolean Read_V_OClasses, boolean Read_E_OClasses) {
+        try (ODatabaseSession db = openDB();) {
+            List<OClassNode> Classes_Nodes = new ArrayList<>();
             if (Read_V_OClasses)
             {
                 OClass V_Class = db.getClass(Vertex_Class_Name);
-                OClass_Node V_nodes = Get_OClass_Hierarchy(V_Class);
+                OClassNode V_nodes = getOClassHierarchy(V_Class);
                 Classes_Nodes.add(V_nodes);
             }
             if (Read_E_OClasses)
             {
                 OClass E_Class = db.getClass(Edge_Class_Name);
-                OClass_Node E_nodes = Get_OClass_Hierarchy(E_Class);
+                OClassNode E_nodes = getOClassHierarchy(E_Class);
                 Classes_Nodes.add(E_nodes);
             }
 
-            OClass_Node super_class = new OClass_Node("OElement", Classes_Nodes);
+            OClassNode super_class = new OClassNode("OElement", Classes_Nodes);
 
             return super_class;
         } catch (Exception e) {
@@ -732,12 +685,12 @@ public class orientdb_connector {
     /**
      * Recursive method
      */
-    private OClass_Node Get_OClass_Hierarchy(OClass parent_class) {
+    private OClassNode getOClassHierarchy(OClass parent_class) {
         List<OClass> sub_classes = new ArrayList<>(parent_class.getSubclasses());
-        List<OClass_Node> child_nodes = new ArrayList<>();
+        List<OClassNode> child_nodes = new ArrayList<>();
         for (OClass sub_class : sub_classes) {
-            child_nodes.add(Get_OClass_Hierarchy(sub_class));
+            child_nodes.add(getOClassHierarchy(sub_class));
         }
-        return new OClass_Node(parent_class, child_nodes);
+        return new OClassNode(parent_class, child_nodes);
     }
 }

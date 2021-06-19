@@ -5,7 +5,7 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.scene.control.ComboBox;
 
-public class OProperty_Node {
+public class OPropertyNode {
     private SimpleStringProperty Name;
     private StringProperty Description;
 
@@ -18,12 +18,12 @@ public class OProperty_Node {
      * @param _Name
      * @param _Description
      */
-    public OProperty_Node(String _Name, String _Description, String _Data_Type) {
+    public OPropertyNode(String _Name, String _Description, String _Data_Type) {
         this.Name = new SimpleStringProperty(_Name);
         this.Description = new SimpleStringProperty(_Description);
 
         this.Data_Type = new ComboBox();
-        this.Data_Type.getItems().addAll(OProperty_Custom_Attribute.Data_Type.Attribute.getPossibleValues());
+        this.Data_Type.getItems().addAll(OPropertyCustomAttribute.DataType.attribute.getPossibleValues());
         setData_Type_Value(_Data_Type); //Value of ComboBox is not set here
 
         this.OrientDBType = new SimpleStringProperty(""); //OType.STRING.toString()
@@ -36,13 +36,13 @@ public class OProperty_Node {
      *
      * @param _oProperty
      */
-    public OProperty_Node(OProperty _oProperty) {
+    public OPropertyNode(OProperty _oProperty) {
         this.Name = new SimpleStringProperty(_oProperty.getName());
         this.Description = new SimpleStringProperty(_oProperty.getDescription());
 
         this.Data_Type = new ComboBox();
-        this.Data_Type.getItems().addAll(OProperty_Custom_Attribute.Data_Type.Attribute.getPossibleValues());
-        this.Data_Type.getSelectionModel().select(_oProperty.getCustom(OProperty_Custom_Attribute.Data_Type.Attribute.getName()));
+        this.Data_Type.getItems().addAll(OPropertyCustomAttribute.DataType.attribute.getPossibleValues());
+        this.Data_Type.getSelectionModel().select(_oProperty.getCustom(OPropertyCustomAttribute.DataType.attribute.getName()));
 
         this.OrientDBType = new SimpleStringProperty(_oProperty.getType().toString());
         oProperty = _oProperty;

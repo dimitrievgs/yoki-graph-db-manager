@@ -10,30 +10,30 @@ import javafx.scene.control.TreeItem;
 import java.util.ArrayList;
 import java.util.List;
 
-public class OVertex_Node {
+public class OVertexNode {
     private SimpleStringProperty Name;
     private ORID rid;
     private OClass oClass;
     private OVertex oVertex;
-    private TreeItem<OVertex_Node> Tree_Item;
+    private TreeItem<OVertexNode> Tree_Item;
     /**
      * For Tree View Approximation
      */
-    private List<OVertex_Node> Childs_Nodes;
+    private List<OVertexNode> Childs_Nodes;
 
-    public OVertex_Node(String name) {
+    public OVertexNode(String name) {
         this(name, null, null, null);
     }
 
-    public OVertex_Node(OVertex _oVertex, OClass _oClass) {
-        this(orientdb_connector.Get_OVertex_Name(_oVertex), _oVertex, _oClass, null);
+    public OVertexNode(OVertex _oVertex, OClass _oClass) {
+        this(OrientdbTalker.getOVertexName(_oVertex), _oVertex, _oClass, null);
     }
 
-    public OVertex_Node(OVertex _oVertex, OClass _oClass, List<OVertex_Node> _Childs_Nodes) {
-        this(orientdb_connector.Get_OVertex_Name(_oVertex), _oVertex, _oClass, _Childs_Nodes);
+    public OVertexNode(OVertex _oVertex, OClass _oClass, List<OVertexNode> _Childs_Nodes) {
+        this(OrientdbTalker.getOVertexName(_oVertex), _oVertex, _oClass, _Childs_Nodes);
     }
 
-    private OVertex_Node(String name, OVertex _oVertex, OClass _oClass, List<OVertex_Node> _Childs_Nodes) {
+    private OVertexNode(String name, OVertex _oVertex, OClass _oClass, List<OVertexNode> _Childs_Nodes) {
         this.Name = new SimpleStringProperty(name);
         if (_oVertex != null) {
             rid = _oVertex.getIdentity();
@@ -43,13 +43,13 @@ public class OVertex_Node {
         }
         oVertex = _oVertex;
         oClass = _oClass;
-        Tree_Item = new TreeItem<OVertex_Node>(this);
+        Tree_Item = new TreeItem<OVertexNode>(this);
         Tree_Item.setExpanded(true);
         Childs_Nodes = _Childs_Nodes;
 
         if (Childs_Nodes != null) {
-            List<TreeItem<OVertex_Node>> child_tree_items = new ArrayList<>();
-            for (OVertex_Node child_node : Childs_Nodes) {
+            List<TreeItem<OVertexNode>> child_tree_items = new ArrayList<>();
+            for (OVertexNode child_node : Childs_Nodes) {
                 child_tree_items.add(child_node.Tree_Item);
             }
             Tree_Item.getChildren().setAll(child_tree_items);
@@ -100,7 +100,7 @@ public class OVertex_Node {
         else return "";
     }
 
-    public TreeItem<OVertex_Node> getTreeItem() {
+    public TreeItem<OVertexNode> getTreeItem() {
         return Tree_Item;
     }
 }

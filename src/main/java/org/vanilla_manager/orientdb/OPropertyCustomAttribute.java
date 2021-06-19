@@ -8,11 +8,11 @@ import java.util.Arrays;
  * The OProperty by default has the attributes such as Name, Description and OType (internal type of data in Orientdb).
  * The class below sets additional attributes / fields for OProperty using CustomFields (.setCustom(str1,str2) / .getCustom())
  */
-public class OProperty_Custom_Attribute {
+public class OPropertyCustomAttribute {
     /**
      * The CustomFields are all String (set by str2 in .setCustom(str1,str2)) by default. Let's emulate variety.
      */
-    public enum Attribute_Type {
+    public enum AttributeType {
         String,
         ComboBox,
         INT,
@@ -22,25 +22,25 @@ public class OProperty_Custom_Attribute {
     /**
      * str1 in .setCustom(str1,str2)
      */
-    private String Name;
+    private String name;
     /**
      * Attributes of OProperty (CustomFields) can store different kind of data:  String, choices of ComboBox, numeric data.
      */
-    private Attribute_Type Type;
+    private AttributeType type;
     /**
      * str2 in .setCustom(str1,str2)
      */
-    private String Value;
+    private String value;
 
     /**
      * For ComboBox Type
      */
-    private String[] PossibleValues;
+    private String[] possibleValues;
 
     /**
      * Using this static array, we will find the type of the attribute (CustomField) by Name (str1).
      */
-    public static OProperty_Custom_Attribute[] List = {Data_Type.Attribute, Random_Generator_Path.Attribute};
+    public static OPropertyCustomAttribute[] list = {DataType.attribute, RandomGeneratorPath.attribute};
 
     /**
      * Costructor for Combobox
@@ -49,10 +49,10 @@ public class OProperty_Custom_Attribute {
      * @param _Type
      * @param _PossibleValues
      */
-    public OProperty_Custom_Attribute(String _Name, Attribute_Type _Type, String[] _PossibleValues) {
-        Name = _Name;
-        Type = _Type;
-        PossibleValues = _PossibleValues;
+    public OPropertyCustomAttribute(String _Name, AttributeType _Type, String[] _PossibleValues) {
+        name = _Name;
+        type = _Type;
+        possibleValues = _PossibleValues;
     }
 
     /**
@@ -61,63 +61,63 @@ public class OProperty_Custom_Attribute {
      * @param _Name
      * @param _Type
      */
-    public OProperty_Custom_Attribute(String _Name, Attribute_Type _Type) {
-        Name = _Name;
-        Type = _Type;
-        PossibleValues = null;
+    public OPropertyCustomAttribute(String _Name, AttributeType _Type) {
+        name = _Name;
+        type = _Type;
+        possibleValues = null;
     }
 
     public String getName()
     {
-        return Name;
+        return name;
     }
 
-    public Attribute_Type getType()
+    public AttributeType getType()
     {
-        return Type;
+        return type;
     }
 
     public String getValue()
     {
-        return Value;
+        return value;
     }
 
     public String[] getPossibleValues()
     {
-        return PossibleValues;
+        return possibleValues;
     }
 
     /**
      * Possible Data Types (Text, Image or Map) which are implemented using one or the other OType.
      */
-    public static class Data_Type
+    public static class DataType
     {
-        public static String Text_Property_Type = "Text";
-        public static String Map_Property_Type = "Map";
-        public static String Image_Property_Type = "Image";
+        public static String textPropertyType = "Text";
+        public static String mapPropertyType = "Map";
+        public static String imagePropertyType = "Image";
 
-        public static String[] Data_Type_String_Values = new String[]{Text_Property_Type, Image_Property_Type, Map_Property_Type};
-        public static OType[] Corresponding_OTypes = new OType[]{OType.STRING, OType.STRING, OType.STRING};
+        public static String[] dataTypeStringValues = new String[]{textPropertyType, imagePropertyType, mapPropertyType};
+        public static OType[] correspondingOTypes = new OType[]{OType.STRING, OType.STRING, OType.STRING};
 
         /**
          * Data Types of this CM for data fields of Records.
          */
-        public static OProperty_Custom_Attribute Attribute = new OProperty_Custom_Attribute("Data_Type", Attribute_Type.ComboBox, Data_Type_String_Values);
+        public static OPropertyCustomAttribute attribute = new OPropertyCustomAttribute("Data_Type", AttributeType.ComboBox, dataTypeStringValues);
 
         /**
          * OType cannot be changed, so this method is meaningless (looks like)
          * @param Data_Type_String_Value
          * @return
          */
-        public static OType Get_OType(String Data_Type_String_Value)
+        public static OType getOType(String Data_Type_String_Value)
         {
-            int i = Arrays.asList(Data_Type_String_Values).indexOf(Data_Type_String_Value);
-            return Corresponding_OTypes[i];
+            int i = Arrays.asList(dataTypeStringValues).indexOf(Data_Type_String_Value);
+            return correspondingOTypes[i];
         }
     }
 
-    public static class Random_Generator_Path
+    public static class RandomGeneratorPath
     {
-        public static OProperty_Custom_Attribute Attribute = new OProperty_Custom_Attribute("Random_Generator_Path", Attribute_Type.String);
+        public static OPropertyCustomAttribute attribute = new OPropertyCustomAttribute("Random_Generator_Path", AttributeType.String);
     }
 }
