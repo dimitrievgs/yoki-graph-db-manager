@@ -27,7 +27,7 @@ public class MessageBox {
         Show(Text, Header, Caption, alert_Type, (int)(Screen.getPrimary().getVisualBounds().getWidth() / 3.0));
     }
 
-    private static void Show(String Text) {
+    public static void Show(String Text) {
         Show(Text, "", "Warning", Alert.AlertType.INFORMATION);
     }
 

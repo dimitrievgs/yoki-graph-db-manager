@@ -8,7 +8,6 @@ import javafx.beans.binding.Bindings;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.*;
@@ -18,10 +17,11 @@ import javafx.scene.layout.VBox;
 import javafx.util.Callback;
 import org.vanilla_manager.MessageBox;
 import org.vanilla_manager.orientdb.oproperty.RandomGeneratorPathButton;
-import org.vanilla_manager.OVertex_Controls.OPropertyTextArea;
-import org.vanilla_manager.OVertex_Controls.OVertexVBox;
+import org.vanilla_manager.overtex_controls.OPropertyTextArea;
+import org.vanilla_manager.overtex_controls.OVertexVBox;
 import org.vanilla_manager.orientdb.oproperty.OPropertyCustomAttribute;
 import org.vanilla_manager.orientdb.oproperty.OPropertyNode;
+import org.vanilla_manager.overtex_controls.TitledPanesHbox;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -329,7 +329,7 @@ public class OrientdbJavafx {
         }
     }
 
-    public void duplicateOVertex(TreeTableView oVerticesTree, ActionEvent actionEvent) {
+    public void duplicateOVertex(TreeTableView oVerticesTree) {
         try {
             int Selected_Index = oVerticesTree.getSelectionModel().getSelectedIndex();
             //MessageBox.Show(String.valueOf(Selected_Index));
@@ -354,7 +354,7 @@ public class OrientdbJavafx {
         }
     }
 
-    public void deleteOVertex(TreeTableView oVerticesTree, ActionEvent actionEvent) {
+    public void deleteOVertex(TreeTableView oVerticesTree) {
         try {
             int Selected_Index = oVerticesTree.getSelectionModel().getSelectedIndex();
             Object o = oVerticesTree.getSelectionModel().getSelectedItem();
@@ -382,7 +382,7 @@ public class OrientdbJavafx {
         return name_is_forbidden;
     }
 
-    public void writeOPropertiesDataToOVertex(TreeTableView oVerticesTree, VBox T1_vbox2, ActionEvent actionEvent) {
+    public void writeOPropertiesDataToOVertex(TreeTableView oVerticesTree, TitledPanesHbox titledPanesHbox) {
         try {
             Object o = oVerticesTree.getSelectionModel().getSelectedItem();
             TreeItem<OVertexNode> ti = (TreeItem<OVertexNode>) o;
@@ -391,12 +391,12 @@ public class OrientdbJavafx {
                 OVertex oVertex = vertex_node.getVertex();
                 OClass oClass = orientdb.getOElementOClassExt(oVertex);
 
-                ObservableList<javafx.scene.Node> vbox_children = T1_vbox2.getChildren();
-                Optional<javafx.scene.Node> find_overtex_vbox = vbox_children.parallelStream().filter(s ->
+                ObservableList<javafx.scene.Node> vboxChildren = titledPanesHbox.getActivePaneVBox().getChildren();
+                Optional<javafx.scene.Node> findOVertexVBox = vboxChildren.parallelStream().filter(s ->
                         s instanceof OVertexVBox && ((OVertexVBox) s).get_OVertex() == oVertex).findFirst();
-                if (find_overtex_vbox.isPresent()) {
-                    OVertexVBox inner_vbox = (OVertexVBox) find_overtex_vbox.get();
-                    ObservableList<javafx.scene.Node> inner_vbox_children = inner_vbox.getChildren();
+                if (findOVertexVBox.isPresent()) {
+                    OVertexVBox innerVBox = (OVertexVBox) findOVertexVBox.get();
+                    ObservableList<javafx.scene.Node> inner_vbox_children = innerVBox.getChildren();
 
                     try (ODatabaseSession db = orientdb.openDB();) {
                         db.begin();
@@ -423,19 +423,41 @@ public class OrientdbJavafx {
         }
     }
 
-    public void readOPropertiesDataFromOVertex(TreeTableView oVerticesTree, VBox T1_vbox2, ActionEvent actionEvent) {
+    public void readOPropertiesDataFromOVertex(TreeTableView oVerticesTree, TitledPanesHbox titledPanesHbox, boolean inNewTitledPane) {
         try {
             Object o = oVerticesTree.getSelectionModel().getSelectedItem();
             TreeItem<OVertexNode> ti = (TreeItem<OVertexNode>) o;
             if (ti != null) {
                 OVertex oVertex = ti.getValue().getVertex();
 
-                ObservableList<javafx.scene.Node> vbox_children = T1_vbox2.getChildren();
-                vbox_children.clear();
-                OVertexVBox inner_vbox = new OVertexVBox(oVertex);
-                ObservableList<javafx.scene.Node> inner_vbox_children = inner_vbox.getChildren();
-                vbox_children.add(inner_vbox);
+                ObservableList<javafx.scene.Node> titledPanesHboxChildren = titledPanesHbox.getChildren();
+                //titledPanesHboxChildren.clear();
 
+                VBox titledPaneVBox;
+                if (inNewTitledPane == false)
+                {
+                    if (titledPanesHboxChildren.size() == 0)
+                    {
+                        titledPaneVBox = titledPanesHbox.addActivePaneVBox();
+                    }
+                    else
+                    {
+                        titledPaneVBox = titledPanesHbox.getActivePaneVBox();
+                    }
+                }
+                else
+                {
+                    titledPaneVBox = titledPanesHbox.addActivePaneVBox();
+                }
+
+                OVertexVBox oVertexVBox = new OVertexVBox(oVertex);
+                titledPaneVBox.getChildren().clear();
+                titledPaneVBox.getChildren().add(oVertexVBox);
+                ObservableList<javafx.scene.Node> oVertexVBoxChildren = oVertexVBox.getChildren();
+                //titledPanesHboxChildren.add(inner_vbox);
+
+                String oVertexName = orientdb.getOVertexName(oVertex);
+                titledPanesHbox.nameActivePane(oVertexName);
                 Collection<OProperty> Properties = orientdb.getOProperties(oVertex);
                 for (OProperty property : Properties) {
                     String property_name = property.getName();
@@ -447,8 +469,8 @@ public class OrientdbJavafx {
                         String s_value = (String) value;
                         OPropertyTextArea TA = new OPropertyTextArea(property);
                         TA.setText(s_value);
-                        inner_vbox_children.add(label);
-                        inner_vbox_children.add(TA);
+                        oVertexVBoxChildren.add(label);
+                        oVertexVBoxChildren.add(TA);
                     }
                 }
             }

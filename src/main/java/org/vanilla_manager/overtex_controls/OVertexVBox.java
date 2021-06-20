@@ -1,6 +1,5 @@
-package org.vanilla_manager.OVertex_Controls;
+package org.vanilla_manager.overtex_controls;
 
-import com.orientechnologies.orient.core.metadata.schema.OProperty;
 import com.orientechnologies.orient.core.record.OVertex;
 import javafx.scene.layout.VBox;
 

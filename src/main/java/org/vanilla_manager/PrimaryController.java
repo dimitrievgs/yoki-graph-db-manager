@@ -18,6 +18,7 @@ import javafx.stage.WindowEvent;
 import org.vanilla_manager.orientdb.*;
 import org.vanilla_manager.orientdb.oproperty.OPropertyCustomAttribute;
 import org.vanilla_manager.orientdb.oproperty.OPropertyNode;
+import org.vanilla_manager.overtex_controls.TitledPanesHbox;
 
 public class PrimaryController {
     public HBox T1_RecordName_parent;
@@ -29,7 +30,6 @@ public class PrimaryController {
     public TextArea T2_OClass_Description_TextField;
     public ComboBox T2_New_Property_DataType_Combobox;
     public TextField T2_New_PropertyName_TextField;
-    public HBox tab1_hbox0;
     @FXML
     private TabPane tabpane1;
     @FXML
@@ -37,9 +37,9 @@ public class PrimaryController {
     @FXML
     private Pane pane1;
     @FXML
-    private VBox vbox0;
+    private HBox hbox0;
     @FXML
-    private VBox T1_vbox2;
+    private TitledPanesHbox titledPanesHbox;
     @FXML
     private MenuBar menubar1;
     @FXML
@@ -94,9 +94,9 @@ public class PrimaryController {
     private void bindCSSClasses() {
         //tabpane1.getStyleClass().clear();
         tabpane1.getStyleClass().add("tabpane1");
-        vbox0.getStyleClass().add("vbox0");
+        hbox0.getStyleClass().add("vbox0");
         oVerticesTree.getStyleClass().add("treetableview1");
-        tab1_hbox0.getStyleClass().add("tab1_hbox0");
+        //tab1_hbox0.getStyleClass().add("tab1_hbox0");
         T1_vbox1.getStyleClass().add("T1_vbox1");
     }
 
@@ -134,8 +134,8 @@ public class PrimaryController {
     }
 
     private void setTextInControls() {
-        T2_New_Property_DataType_Combobox.getItems().addAll(OPropertyCustomAttribute.DataType.attribute.getPossibleValues());
-        T2_New_Property_DataType_Combobox.getSelectionModel().select(0);
+        //T2_New_Property_DataType_Combobox.getItems().addAll(OPropertyCustomAttribute.DataType.attribute.getPossibleValues());
+        //T2_New_Property_DataType_Combobox.getSelectionModel().select(0);
 
         //add images for htmleditor: https://stackoverflow.com/questions/10968000/javafx-htmleditor-insert-image-function
     }
@@ -144,12 +144,12 @@ public class PrimaryController {
 
     private void setSizesLocations() {
         menubar1.prefWidthProperty().bind(stage.widthProperty());
-        vbox0.prefWidthProperty().bind(stage.widthProperty());
-        vbox0.prefHeightProperty().bind(stage.heightProperty());
+        hbox0.prefWidthProperty().bind(stage.widthProperty());
+        hbox0.prefHeightProperty().bind(stage.heightProperty());
         T1_RecordName.minWidthProperty().bind(T1_RecordName_parent.widthProperty()); //с prefHeightProperty не работает
         T2_RecordName.minWidthProperty().bind(T2_RecordName_parent.widthProperty()); //с prefHeightProperty не работает
 
-        DoubleBinding foo = new DoubleBinding() {
+        /*DoubleBinding foo = new DoubleBinding() {
             {
                 super.bind(stage.widthProperty());
             }
@@ -159,7 +159,7 @@ public class PrimaryController {
                 return stage.widthProperty().getValue() - T1_vbox1.widthProperty().getValue() - tab1_hbox0.getSpacing() - T1_vbox1.getPadding().getLeft() - 7;
             }
         };
-        T1_vbox2.prefWidthProperty().bind(foo);
+        titledPanesHbox.prefWidthProperty().bind(foo);*/
 
         oVerticesTree.setMinWidth(treetableview_width);
         oClassesTree.setMinWidth(treetableview_width);
@@ -174,7 +174,7 @@ public class PrimaryController {
             @Override
             public void handle(WindowEvent windowEvent) {
                 orientdbJavafx.loadAndShowOVerticesList(oVerticesTree, T1_RecordName.getText());
-                orientdbJavafx.loadAndShowOClassesTree(oClassesTree, oPropertiesTable, true, true);
+                //orientdbJavafx.loadAndShowOClassesTree(oClassesTree, oPropertiesTable, true, true);
             }
         });
 
@@ -182,6 +182,7 @@ public class PrimaryController {
         //Disable TreeItem's default expand/collapse on double click (JavaFX 8): https://stackoverflow.com/questions/46436974/disable-treeitems-default-expand-collapse-on-double-click-javafx-8
         oVerticesTree.addEventFilter(MouseEvent.MOUSE_PRESSED, (MouseEvent event) -> {
             if (event.getClickCount() % 2 == 0 && event.isPrimaryButtonDown()) {
+                boolean k = event.isControlDown();
                 T1_Read_Properties_Data_From_OVertex(null);
                 event.consume();
             }
@@ -258,19 +259,19 @@ public class PrimaryController {
     }
 
     public void T1_Duplicate_OVertex(ActionEvent actionEvent) {
-        orientdbJavafx.duplicateOVertex(oVerticesTree, actionEvent);
+        orientdbJavafx.duplicateOVertex(oVerticesTree);
     }
 
     public void T1_Delete_OVertex(ActionEvent actionEvent) {
-        orientdbJavafx.deleteOVertex(oVerticesTree, actionEvent);
+        orientdbJavafx.deleteOVertex(oVerticesTree);
     }
 
     public void T1_Write_Properties_Data_To_OVertex(ActionEvent actionEvent) {
-        orientdbJavafx.writeOPropertiesDataToOVertex(oVerticesTree, T1_vbox2, actionEvent);
+        orientdbJavafx.writeOPropertiesDataToOVertex(oVerticesTree, titledPanesHbox);
     }
 
     public void T1_Read_Properties_Data_From_OVertex(ActionEvent actionEvent) {
-        orientdbJavafx.readOPropertiesDataFromOVertex(oVerticesTree, T1_vbox2, actionEvent);
+        orientdbJavafx.readOPropertiesDataFromOVertex(oVerticesTree, titledPanesHbox, false);
     }
 
     //-------------------------------------------------------------------------
