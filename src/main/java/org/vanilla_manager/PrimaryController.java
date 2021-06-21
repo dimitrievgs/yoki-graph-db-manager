@@ -16,7 +16,6 @@ import javafx.stage.Stage;
 import javafx.scene.web.HTMLEditor;
 import javafx.stage.WindowEvent;
 import org.vanilla_manager.orientdb.*;
-import org.vanilla_manager.orientdb.oproperty.OPropertyCustomAttribute;
 import org.vanilla_manager.orientdb.oproperty.OPropertyNode;
 import org.vanilla_manager.overtex_controls.TitledPanesHbox;
 
@@ -33,7 +32,7 @@ public class PrimaryController {
     @FXML
     private TabPane tabpane1;
     @FXML
-    private VBox T1_vbox1;
+    private VBox OVertexTabVBox;
     @FXML
     private Pane pane1;
     @FXML
@@ -97,7 +96,7 @@ public class PrimaryController {
         hbox0.getStyleClass().add("vbox0");
         oVerticesTree.getStyleClass().add("treetableview1");
         //tab1_hbox0.getStyleClass().add("tab1_hbox0");
-        T1_vbox1.getStyleClass().add("T1_vbox1");
+        OVertexTabVBox.getStyleClass().add("T1_vbox1");
     }
 
     private void addMenu() {
@@ -149,17 +148,18 @@ public class PrimaryController {
         T1_RecordName.minWidthProperty().bind(T1_RecordName_parent.widthProperty()); //с prefHeightProperty не работает
         T2_RecordName.minWidthProperty().bind(T2_RecordName_parent.widthProperty()); //с prefHeightProperty не работает
 
-        /*DoubleBinding foo = new DoubleBinding() {
+        DoubleBinding foo = new DoubleBinding() {
             {
                 super.bind(stage.widthProperty());
             }
 
             @Override
             protected double computeValue() {
-                return stage.widthProperty().getValue() - T1_vbox1.widthProperty().getValue() - tab1_hbox0.getSpacing() - T1_vbox1.getPadding().getLeft() - 7;
+                return stage.widthProperty().getValue() - OVertexTabVBox.widthProperty().getValue()
+                        /*- OVertexTabVBox.getSpacing()*/ /*- OVertexTabVBox.getPadding().getLeft()*/ - 16; //where is this shift from??
             }
         };
-        titledPanesHbox.prefWidthProperty().bind(foo);*/
+        titledPanesHbox.prefWidthProperty().bind(foo);
 
         oVerticesTree.setMinWidth(treetableview_width);
         oClassesTree.setMinWidth(treetableview_width);
@@ -182,8 +182,7 @@ public class PrimaryController {
         //Disable TreeItem's default expand/collapse on double click (JavaFX 8): https://stackoverflow.com/questions/46436974/disable-treeitems-default-expand-collapse-on-double-click-javafx-8
         oVerticesTree.addEventFilter(MouseEvent.MOUSE_PRESSED, (MouseEvent event) -> {
             if (event.getClickCount() % 2 == 0 && event.isPrimaryButtonDown()) {
-                boolean k = event.isControlDown();
-                T1_Read_Properties_Data_From_OVertex(null);
+                orientdbJavafx.readOPropertiesDataFromOVertex(oVerticesTree, titledPanesHbox, event.isControlDown());
                 event.consume();
             }
         });

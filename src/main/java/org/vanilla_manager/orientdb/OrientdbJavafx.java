@@ -284,7 +284,7 @@ public class OrientdbJavafx {
                         error_message += "Name is empty! ";
                         bool_result = false;
                     }
-                    if (OVertex_Name_Is_Forbidden(new_Record_Name) == true) {
+                    if (oVertexNameIsForbidden(new_Record_Name) == true) {
                         error_message += "Name is forbidden! ";
                         bool_result = false;
                     }
@@ -335,7 +335,7 @@ public class OrientdbJavafx {
             //MessageBox.Show(String.valueOf(Selected_Index));
             if (Selected_Index > -1) {
                 TreeItem<OVertexNode> ti = (TreeItem<OVertexNode>) oVerticesTree.getSelectionModel().getSelectedItem();
-                if (ti != null && OVertex_Name_Is_Forbidden(ti.getValue().getName()) == false) {
+                if (ti != null && oVertexNameIsForbidden(ti.getValue().getName()) == false) {
                     int Childs_Index = Get_TreeItem_Index_As_Child(ti);
                     OVertexNode ee = ti.getValue();
                     //String RID = ee.getRID().toString();
@@ -359,7 +359,7 @@ public class OrientdbJavafx {
             int Selected_Index = oVerticesTree.getSelectionModel().getSelectedIndex();
             Object o = oVerticesTree.getSelectionModel().getSelectedItem();
             TreeItem<OVertexNode> ti = (TreeItem<OVertexNode>) o;
-            if (ti != null && OVertex_Name_Is_Forbidden(ti.getValue().getName()) == false) {
+            if (ti != null && oVertexNameIsForbidden(ti.getValue().getName()) == false) {
                 //delete from database
                 OVertexNode ee = ti.getValue();
                 //String RID = ee.getRID().toString();
@@ -377,30 +377,40 @@ public class OrientdbJavafx {
 
     private String[] Forbidden_Record_Names = new String[]{OrientdbTalker.Root_Vertex_Name};
 
-    private boolean OVertex_Name_Is_Forbidden(String old_Name) {
+    private boolean oVertexNameIsForbidden(String old_Name) {
         boolean name_is_forbidden = Arrays.stream(Forbidden_Record_Names).anyMatch(old_Name::equals);
         return name_is_forbidden;
     }
+
+    static String oVertexVBoxTextField = "oVertexVBoxTextField";
 
     public void writeOPropertiesDataToOVertex(TreeTableView oVerticesTree, TitledPanesHbox titledPanesHbox) {
         try {
             Object o = oVerticesTree.getSelectionModel().getSelectedItem();
             TreeItem<OVertexNode> ti = (TreeItem<OVertexNode>) o;
-            if (ti != null && OVertex_Name_Is_Forbidden(ti.getValue().getName()) == false) {
-                OVertexNode vertex_node = ti.getValue();
-                OVertex oVertex = vertex_node.getVertex();
+            if (ti != null && oVertexNameIsForbidden(ti.getValue().getName()) == false) {
+                OVertexNode oVertexTINode = ti.getValue();
+                OVertex oVertex = oVertexTINode.getVertex();
                 OClass oClass = orientdb.getOElementOClassExt(oVertex);
 
                 ObservableList<javafx.scene.Node> vboxChildren = titledPanesHbox.getActivePaneVBox().getChildren();
                 Optional<javafx.scene.Node> findOVertexVBox = vboxChildren.parallelStream().filter(s ->
                         s instanceof OVertexVBox && ((OVertexVBox) s).get_OVertex() == oVertex).findFirst();
                 if (findOVertexVBox.isPresent()) {
-                    OVertexVBox innerVBox = (OVertexVBox) findOVertexVBox.get();
-                    ObservableList<javafx.scene.Node> inner_vbox_children = innerVBox.getChildren();
+                    OVertexVBox oVertexVBox = (OVertexVBox) findOVertexVBox.get();
+                    ObservableList<javafx.scene.Node> oVertexVBoxChildren = oVertexVBox.getChildren();
 
                     try (ODatabaseSession db = orientdb.openDB();) {
                         db.begin();
-                        for (javafx.scene.Node node : inner_vbox_children) {
+                        String newName = oVertexTINode.getName();
+                        for (javafx.scene.Node node : oVertexVBoxChildren) {
+                            if (node instanceof TextField && node.getId() == oVertexVBoxTextField)
+                            {
+                                //var f = oVertex.getPropertyNames();
+                                TextField nameField = (TextField) node;
+                                newName = nameField.getText();
+                                orientdb.setOVertexName(oVertex, newName);
+                            }
                             if (node instanceof OPropertyTextArea) {
                                 OPropertyTextArea op_textarea = (OPropertyTextArea) node;
                                 OProperty node_property = op_textarea.getOProperty();
@@ -413,6 +423,9 @@ public class OrientdbJavafx {
                         }
                         oVertex.save();
                         db.commit();
+
+                        oVertexTINode.setName(newName);
+                        ti.setValue(oVertexTINode); //update item in TreeTableView
                     } catch (Exception e) {
                         MessageBox.Show(e);
                     }
@@ -431,8 +444,6 @@ public class OrientdbJavafx {
                 OVertex oVertex = ti.getValue().getVertex();
 
                 ObservableList<javafx.scene.Node> titledPanesHboxChildren = titledPanesHbox.getChildren();
-                //titledPanesHboxChildren.clear();
-
                 VBox titledPaneVBox;
                 if (inNewTitledPane == false)
                 {
@@ -454,11 +465,17 @@ public class OrientdbJavafx {
                 titledPaneVBox.getChildren().clear();
                 titledPaneVBox.getChildren().add(oVertexVBox);
                 ObservableList<javafx.scene.Node> oVertexVBoxChildren = oVertexVBox.getChildren();
-                //titledPanesHboxChildren.add(inner_vbox);
-
                 String oVertexName = orientdb.getOVertexName(oVertex);
                 titledPanesHbox.nameActivePane(oVertexName);
-                Collection<OProperty> Properties = orientdb.getOProperties(oVertex);
+
+                TextField nameField = new TextField();
+                Label nameLabel = new Label();
+                nameLabel.setText("Name");
+                nameField.setId(oVertexVBoxTextField);
+                nameField.setText(oVertexName);
+                oVertexVBoxChildren.addAll(nameLabel, nameField);
+
+                Collection<OProperty> Properties = orientdb.getOClassOProperties(oVertex);
                 for (OProperty property : Properties) {
                     String property_name = property.getName();
                     String dataType = property.getCustom(OPropertyCustomAttribute.DataType.attribute.getName());
@@ -469,8 +486,7 @@ public class OrientdbJavafx {
                         String s_value = (String) value;
                         OPropertyTextArea TA = new OPropertyTextArea(property);
                         TA.setText(s_value);
-                        oVertexVBoxChildren.add(label);
-                        oVertexVBoxChildren.add(TA);
+                        oVertexVBoxChildren.addAll(label, TA);
                     }
                 }
             }

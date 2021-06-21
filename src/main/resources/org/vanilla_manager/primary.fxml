@@ -44,7 +44,7 @@
             </ToolBar>-->
             <TabPane fx:id="tabpane1">
                 <Tab text="Manage Records">
-                    <VBox fx:id="T1_vbox1" prefHeight="171.0" prefWidth="200.0"
+                    <VBox fx:id="OVertexTabVBox" prefHeight="171.0" prefWidth="200.0"
                           spacing="10">
                         <children>
                             <HBox fx:id="T1_RecordName_parent">
@@ -82,7 +82,7 @@
                     </VBox>
                 </Tab>
                 <Tab text="Manage Classes">
-                    <VBox fx:id="T2_vbox1" prefHeight="171.0" prefWidth="200.0"
+                    <VBox fx:id="OClassesTabVBox" prefHeight="171.0" prefWidth="200.0"
                           spacing="10">
                         <children>
                             <HBox fx:id="T2_RecordName_parent">
@@ -133,7 +133,7 @@
                     </VBox>-->
                 </Tab>
             </TabPane>
-            <TitledPanesHbox fx:id="titledPanesHbox" spacing="10">
+            <TitledPanesHbox fx:id="titledPanesHbox" spacing="0">
                 <children>
                 </children>
                 <padding>

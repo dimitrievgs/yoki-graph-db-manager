@@ -122,6 +122,11 @@ public class OrientdbTalker {
         return t.getProperty("Name").toString();
     }
 
+    public static void setOVertexName(OVertex t, String newName) {
+        t.setProperty("Name", newName);
+    }
+
+
     /**
      * For some reason it doesn't work outside of "try (ODatabaseSession db = orientDB.open(db_name, user_name, password);) {"
      *
@@ -556,7 +561,7 @@ public class OrientdbTalker {
         return null;
     }
 
-    public Collection<OProperty> getOProperties(OElement t) {
+    public Collection<OProperty> getOClassOProperties(OElement t) {
         try (ODatabaseSession db = openDB();) {
             OClass oClass = getOElementOClass(t);
             Collection<OProperty> Properties = oClass.properties();

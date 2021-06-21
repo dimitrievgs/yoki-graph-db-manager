@@ -54,16 +54,11 @@ public class TitledPanesHbox extends HBox {
 
         VBox commonVBox = new VBox();
         ScrollPane scrollPane = new ScrollPane(commonVBox);
+        //increase scrollpane speed: https://stackoverflow.com/questions/56739913/how-to-increase-scrolling-speed-of-scrollpane-javafx
+        //scrollPane.set
         titledPane.setContent(scrollPane);
 
         commonVBox.setPadding(new Insets(top, right, bottom, left));
-
-        //titledPane.setContent(commonVBox);
-        //ScrollPane sideBarScroller = new ScrollPane(sideBar);
-        //scrollPane.setFitToWidth(true);
-        //borderPane.setRight(sideBarScroller);
-
-
         return commonVBox;
     }
 
