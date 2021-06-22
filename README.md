@@ -1,5 +1,6 @@
 joki [eng.tr. 'yoki'] - fin.: river 
 
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/K3K1526Z7)
 
 <p align="left">
     <a href="https://ko-fi.com/grigoriidimitriev0561" title="Donate to this project using Buy Me A Coffee"><img src="https://img.shields.io/badge/buy%20me%20a%20coffee-donate-yellow.svg" alt="Buy Me A Coffee donate button" width="160"/></a>
