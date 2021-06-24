@@ -66,4 +66,29 @@ public class TitledPanesHbox extends HBox {
     {
         getActivePane().setText(name);
     }
+
+    public void addNewEntityVBox(VBox newEntityVBox, String newEntityName, boolean inNewTitledPane)
+    {
+        ObservableList<javafx.scene.Node> titledPanesHboxChildren = getChildren();
+        VBox titledPaneVBox;
+        if (inNewTitledPane == false)
+        {
+            if (titledPanesHboxChildren.size() == 0)
+            {
+                titledPaneVBox = addActivePaneVBox();
+            }
+            else
+            {
+                titledPaneVBox = getActivePaneVBox();
+            }
+        }
+        else
+        {
+            titledPaneVBox = addActivePaneVBox();
+        }
+
+        titledPaneVBox.getChildren().clear();
+        titledPaneVBox.getChildren().add(newEntityVBox);
+        nameActivePane(newEntityName);
+    }
 }

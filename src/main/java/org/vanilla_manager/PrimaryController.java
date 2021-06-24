@@ -246,7 +246,7 @@ public class PrimaryController {
     }
 
     public void T2_LoadDB(ActionEvent actionEvent) {
-        orientdbJavafx.loadAndShowOClassesTree(oClassesTree, oPropertiesTable, true, true);
+        orientdbJavafx.setOClassesTreeRootAndColumns(oClassesTree, true, true);
     }
 
     //-------------------------------------------------------------------------
@@ -281,7 +281,7 @@ public class PrimaryController {
     }
 
     public void T2_Read_Properties_From_Class(ActionEvent actionEvent) {
-        orientdbJavafx.readPropertiesFromOClass(oClassesTree, oPropertiesTable, T2_OClass_Name_TextField, T2_OClass_Description_TextField);
+        orientdbJavafx.readPropertiesFromOClass(oClassesTree, titledPanesHbox, false);
     }
 
     public void T2_Add_OClass(ActionEvent actionEvent) {

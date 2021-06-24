@@ -20,23 +20,13 @@ public class OVertexVBox extends VBox {
     private OVertex oVertex;
     //public final ObjectProperty<Enum<?>> buttonState = new SimpleObjectProperty<>(ButtonState.NORMAL);
 
-    public OVertex get_OVertex() {
+    public OVertex getOVertex() {
         return this.oVertex;
     }
 
-    public void set_OVertex(OVertex value) {
+    public void setOVertex(OVertex value) {
         this.oVertex = value;
     }
-
-
-    /*public final OProperty getButtonState() {
-        return this.get_OProperty();
-    }
-*/
-
-    /*public final void setButtonState(final Enum<?> buttonState) {
-        this.get_OProperty().set(buttonState);
-    }*/
 
     public OVertexVBox(OVertex _oVertex) {
         super();
@@ -45,8 +35,5 @@ public class OVertexVBox extends VBox {
                 when(buttonState.isEqualTo(ButtonState.CRITICAL)).
                 then("-fx-base: red;").
                 otherwise(""));*/
-
-
     }
-
 }
