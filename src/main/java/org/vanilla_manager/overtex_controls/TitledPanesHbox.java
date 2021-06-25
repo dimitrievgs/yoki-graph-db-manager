@@ -1,5 +1,6 @@
 package org.vanilla_manager.overtex_controls;
 
+import com.orientechnologies.orient.core.metadata.schema.OClass;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
@@ -90,5 +91,14 @@ public class TitledPanesHbox extends HBox {
         titledPaneVBox.getChildren().clear();
         titledPaneVBox.getChildren().add(newEntityVBox);
         nameActivePane(newEntityName);
+    }
+
+    public OClassVBox getOClassVBoxes(OClass oClass)
+    {
+        ObservableList<Node> titledPanesHboxChildren = this.getChildren();
+        for (var t : titledPanesHboxChildren)
+        {
+
+        }
     }
 }

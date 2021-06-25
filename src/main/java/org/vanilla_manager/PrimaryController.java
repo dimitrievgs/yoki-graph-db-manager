@@ -24,11 +24,11 @@ public class PrimaryController {
     public Button T1_bLoadDB;
     public TextField T2_RecordName;
     public HBox T2_RecordName_parent;
-    public TextField T2_OClass_Name_TextField;
+    //public TextField T2_OClass_Name_TextField;
     public TableView<OPropertyNode> oPropertiesTable;
-    public TextArea T2_OClass_Description_TextField;
-    public ComboBox T2_New_Property_DataType_Combobox;
-    public TextField T2_New_PropertyName_TextField;
+    //public TextArea T2_OClass_Description_TextField;
+    //public ComboBox T2_New_Property_DataType_Combobox;
+    //public TextField T2_New_PropertyName_TextField;
     @FXML
     private TabPane tabpane1;
     @FXML
@@ -133,9 +133,6 @@ public class PrimaryController {
     }
 
     private void setTextInControls() {
-        //T2_New_Property_DataType_Combobox.getItems().addAll(OPropertyCustomAttribute.DataType.attribute.getPossibleValues());
-        //T2_New_Property_DataType_Combobox.getSelectionModel().select(0);
-
         //add images for htmleditor: https://stackoverflow.com/questions/10968000/javafx-htmleditor-insert-image-function
     }
 
@@ -174,7 +171,7 @@ public class PrimaryController {
             @Override
             public void handle(WindowEvent windowEvent) {
                 orientdbJavafx.loadAndShowOVerticesList(oVerticesTree, T1_RecordName.getText());
-                //orientdbJavafx.loadAndShowOClassesTree(oClassesTree, oPropertiesTable, true, true);
+                orientdbJavafx.loadAndShowOClassesTree(oClassesTree, true, true);
             }
         });
 
@@ -246,7 +243,7 @@ public class PrimaryController {
     }
 
     public void T2_LoadDB(ActionEvent actionEvent) {
-        orientdbJavafx.setOClassesTreeRootAndColumns(oClassesTree, true, true);
+        orientdbJavafx.loadAndShowOClassesTree(oClassesTree, true, true);
     }
 
     //-------------------------------------------------------------------------
@@ -277,7 +274,7 @@ public class PrimaryController {
     //----------------------------Graph DB - OClass----------------------------
 
     public void T2_Write_Properties_To_Class(ActionEvent actionEvent) {
-        orientdbJavafx.writePropertiesToOClass(oClassesTree, oPropertiesTable, T2_OClass_Name_TextField, T2_OClass_Description_TextField);
+        orientdbJavafx.writePropertiesToOClass(oClassesTree, titledPanesHbox);
     }
 
     public void T2_Read_Properties_From_Class(ActionEvent actionEvent) {
@@ -296,11 +293,11 @@ public class PrimaryController {
         orientdbJavafx.deleteOClass(oClassesTree);
     }
 
-    public void T2_AddProperty(ActionEvent actionEvent) {
+    /*public void T2_AddProperty(ActionEvent actionEvent) {
         orientdbJavafx.addOProperty(oPropertiesTable, T2_New_PropertyName_TextField, T2_New_Property_DataType_Combobox);
     }
 
     public void T2_DeleteProperty(ActionEvent actionEvent) {
         orientdbJavafx.deleteOProperty(oPropertiesTable);
-    }
+    }*/
 }

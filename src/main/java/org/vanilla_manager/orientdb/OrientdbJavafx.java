@@ -8,12 +8,15 @@ import javafx.beans.binding.Bindings;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.stage.WindowEvent;
 import javafx.util.Callback;
 import org.vanilla_manager.MessageBox;
 import org.vanilla_manager.orientdb.oproperty.RandomGeneratorPathButton;
@@ -109,7 +112,7 @@ public class OrientdbJavafx {
     }
 
     //another solutions for ComboBox: https://stackoverflow.com/questions/35131428/combobox-in-a-tableview-cell-in-javafx
-    public void setOClassesTreeRootAndColumns(TreeTableView<OClassNode> oClassesTree, boolean Read_V_OClasses, boolean Read_E_OClasses) {
+    public void loadAndShowOClassesTree(TreeTableView<OClassNode> oClassesTree, boolean Read_V_OClasses, boolean Read_E_OClasses) {
         //Classes list
         OClassNode super_class_node = orientdb.readOClasses(Read_V_OClasses, Read_E_OClasses);
 
@@ -125,48 +128,6 @@ public class OrientdbJavafx {
         oClassesTree.getColumns().setAll(name_column/*, rid_column*/);
         oClassesTree.setPrefWidth(152);
         oClassesTree.setShowRoot(true);
-    }
-
-    public void setOClassOPropertiesTableColumns(TableView<OPropertyNode> oPropertiesTable) {
-        //Table for each class properties
-        oPropertiesTable.setEditable(true);
-
-        TableColumn<OPropertyNode, String> tv_name_Col = new TableColumn<>("Name");
-        tv_name_Col.setMinWidth(100); //150
-        tv_name_Col.setCellValueFactory(cellData -> cellData.getValue().nameProperty());
-        tv_name_Col.setCellFactory(TextFieldTableCell.forTableColumn());
-        //firstNameCol.setCellValueFactory(new PropertyValueFactory<OProperty_Node, String>("name"));
-
-        TableColumn<OPropertyNode, String> tv_description_column = new TableColumn<>("Description");
-        tv_description_column.setMinWidth(100); //150
-        tv_description_column.setCellValueFactory(cellData -> cellData.getValue().descriptionProperty());
-        tv_description_column.setCellFactory(TextFieldTableCell.forTableColumn());
-
-        TableColumn<OPropertyNode, ComboBox> tv_Data_Type_column = new TableColumn<>("Data type");
-        tv_Data_Type_column.setMinWidth(100);
-        //tv_Data_Type_column.setCellValueFactory(new PropertyValueFactory<OProperty_Node, String>("Data_Type"));
-        tv_Data_Type_column.setCellValueFactory(i -> {
-            final ComboBox<String> value = i.getValue().getDataType();
-            value.prefWidthProperty().bind(i.getTableColumn().widthProperty());
-            // binding to constant value
-            return Bindings.createObjectBinding(() -> value);
-        });
-
-        TableColumn<OPropertyNode, String> tv_orientdbtype_column = new TableColumn<>("OrientDB Type");
-        tv_orientdbtype_column.setMinWidth(5); //100
-        tv_orientdbtype_column.setCellValueFactory(cellData -> cellData.getValue().orientdbTypeProperty());
-
-        TableColumn<OPropertyNode, RandomGeneratorPathButton> tvRandomGeneratorPathColumn = new TableColumn<>("Random Gen");
-        tvRandomGeneratorPathColumn.setMinWidth(75);
-        //tv_Data_Type_column.setCellValueFactory(new PropertyValueFactory<OProperty_Node, String>("Data_Type"));
-        tvRandomGeneratorPathColumn.setCellValueFactory(i -> {
-            final RandomGeneratorPathButton value = i.getValue().getRandomGeneratorPath();
-            value.prefWidthProperty().bind(i.getTableColumn().widthProperty());
-            // binding to constant value
-            return Bindings.createObjectBinding(() -> value);
-        });
-
-        oPropertiesTable.getColumns().setAll(tv_name_Col, tv_description_column, tv_Data_Type_column, tv_orientdbtype_column, tvRandomGeneratorPathColumn);
     }
 
     //-------------------------------------------------------------------------
@@ -269,7 +230,7 @@ public class OrientdbJavafx {
 
         hbox.setSpacing(10);
 
-        setOClassesTreeRootAndColumns(OClass_treetableview, true, false);
+        loadAndShowOClassesTree(OClass_treetableview, true, false);
 
         ButtonType buttonTypeOk = new ButtonType("Ok", ButtonBar.ButtonData.OK_DONE);
         dialog.getDialogPane().getButtonTypes().add(buttonTypeOk);
@@ -489,11 +450,7 @@ public class OrientdbJavafx {
         return name_is_forbidden;
     }
 
-    static String oClassVBoxNameTextField = "oClassVBoxNameTextField";
-    static String oClassVBoxDescriptionTextField = "oClassVBoxDescriptionTextField";
-
-    public void writePropertiesToOClass(TreeTableView oClassesTree, TableView<OPropertyNode> oPropertiesTable, TextField T2_OClass_Name_TextField,
-                                        TextArea T2_OClass_Description_TextField) {
+    public void writePropertiesToOClass(TreeTableView oClassesTree, TitledPanesHbox titledPanesHbox) {
         try {
             Object o = oClassesTree.getSelectionModel().getSelectedItem();
             TreeItem<OClassNode> ti = (TreeItem<OClassNode>) o;
@@ -532,24 +489,6 @@ public class OrientdbJavafx {
                 OClassVBox oClassVBox = new OClassVBox(oClass);
                 String oClassName = oClass.getName();
                 titledPanesHbox.addNewEntityVBox(oClassVBox, oClassName, inNewTitledPane);
-                ObservableList<javafx.scene.Node> oClassVBoxChildren = oClassVBox.getChildren();
-
-                Label nameLabel = new Label();
-                nameLabel.setText("Name");
-                TextField nameField = new TextField();
-                nameField.setId(oClassVBoxNameTextField);
-                nameField.setText(oClassName);
-
-                Label descLabel = new Label();
-                descLabel.setText("Description");
-                TextField descField = new TextField();
-                descField.setId(oClassVBoxDescriptionTextField);
-                descField.setText(oClass.getDescription());
-
-                TableView<OPropertyNode> oPropertiesTable = new TableView<>();
-                setOClassOPropertiesTableColumns(oPropertiesTable);
-
-                oClassVBoxChildren.addAll(nameLabel, nameField, descLabel, descField, oPropertiesTable);
 
                 Collection<OProperty> properties = orientdb.readOClassOProperties(oClass);
                 final ObservableList<OPropertyNode> data_for_table = FXCollections.observableArrayList();
@@ -558,7 +497,7 @@ public class OrientdbJavafx {
                     for (OProperty property : properties) {
                         data_for_table.add(new OPropertyNode(oClass, property));
                     }
-                    oPropertiesTable.setItems(data_for_table);
+                    oClassVBox.getoPropertiesTable().setItems(data_for_table);
                 }
                 Last_Read_OClass = oClass;
             }
@@ -627,27 +566,6 @@ public class OrientdbJavafx {
             orientdb.removeOClassExt(oClass);
             ti.getParent().getChildren().remove(ti);
             oClassesTree.getSelectionModel().select(Selected_Index);
-        }
-    }
-
-    public void addOProperty(TableView<OPropertyNode> oPropertiesTable, TextField T2_New_PropertyName_TextField, ComboBox T2_New_Property_DataType_Combobox) {
-        //check if we have read already some OClass once and that we haven't deleted it yet
-        String OProperty_Name = T2_New_PropertyName_TextField.getText();
-        if (OProperty_Name.length() > 0 && Last_Read_OClass != null && orientdb.existsOClassExt(Last_Read_OClass)) {
-            OPropertyNode property_node = new OPropertyNode(Last_Read_OClass, OProperty_Name, "",
-                    T2_New_Property_DataType_Combobox.getSelectionModel().getSelectedItem().toString(), "");
-            oPropertiesTable.getItems().add(property_node);
-        }
-    }
-
-    public void deleteOProperty(TableView<OPropertyNode> oPropertiesTable) {
-        //check if we have read already some OClass once and that we haven't deleted it yet
-        OPropertyNode property_node = oPropertiesTable.getSelectionModel().getSelectedItem();
-        if (property_node != null) //&& orientdb_connector1.exists_OClass(Last_Read_OClass)
-        {
-            /*OProperty_Node property_node = new OProperty_Node(OProperty_Name, "",
-                    T2_New_Property_DataType_Combobox.getSelectionModel().getSelectedItem().toString());*/
-            oPropertiesTable.getItems().remove(property_node);
         }
     }
 }

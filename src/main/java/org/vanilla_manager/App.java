@@ -34,7 +34,7 @@ public class App extends Application {
         scene = new Scene(loader.load(), 640, 480);
         scene.getStylesheets().add(ResourcesManager.getResource("scene.css").toExternalForm());
         primaryStage.setScene(scene);
-        primaryStage.setTitle("Yoki WB");
+        primaryStage.setTitle("Graph Database Manager (test)");
         primaryStage.setMaximized(true);
         addicon(primaryStage);
 
@@ -59,7 +59,7 @@ public class App extends Application {
 
     private void addicon(Stage primaryStage) {
         try {
-            InputStream iconStream = ResourcesManager.getResourceAsStream("icons/2250204.png");
+            InputStream iconStream = ResourcesManager.getResourceAsStream("icons/graph-db-pic.png");
             Image image = new Image(iconStream);
             primaryStage.getIcons().add(image);
         } catch (Exception e) {
