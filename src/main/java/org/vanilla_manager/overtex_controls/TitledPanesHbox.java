@@ -93,12 +93,12 @@ public class TitledPanesHbox extends HBox {
         nameActivePane(newEntityName);
     }
 
-    public OClassVBox getOClassVBoxes(OClass oClass)
+    /*public OClassVBox getOClassVBoxes(OClass oClass)
     {
         ObservableList<Node> titledPanesHboxChildren = this.getChildren();
         for (var t : titledPanesHboxChildren)
         {
 
         }
-    }
+    }*/
 }

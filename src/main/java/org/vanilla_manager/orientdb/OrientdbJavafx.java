@@ -4,22 +4,16 @@ import com.orientechnologies.orient.core.db.ODatabaseSession;
 import com.orientechnologies.orient.core.metadata.schema.OClass;
 import com.orientechnologies.orient.core.metadata.schema.OProperty;
 import com.orientechnologies.orient.core.record.OVertex;
-import javafx.beans.binding.Bindings;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.stage.WindowEvent;
 import javafx.util.Callback;
 import org.vanilla_manager.MessageBox;
-import org.vanilla_manager.orientdb.oproperty.RandomGeneratorPathButton;
 import org.vanilla_manager.overtex_controls.OClassVBox;
 import org.vanilla_manager.overtex_controls.OPropertyTextArea;
 import org.vanilla_manager.overtex_controls.OVertexVBox;
@@ -450,34 +444,10 @@ public class OrientdbJavafx {
         return name_is_forbidden;
     }
 
-    public void writePropertiesToOClass(TreeTableView oClassesTree, TitledPanesHbox titledPanesHbox) {
-        try {
-            Object o = oClassesTree.getSelectionModel().getSelectedItem();
-            TreeItem<OClassNode> ti = (TreeItem<OClassNode>) o;
-            if (ti != null && OClass_Name_Is_Forbidden(ti.getValue().getName()) == false) {
-                OClassNode class_node = ti.getValue();
-                OClass oClass = class_node.getOClass();
-
-                String new_Name = T2_OClass_Name_TextField.getText();
-                String new_Description = T2_OClass_Description_TextField.getText();
-
-                ObservableList<OPropertyNode> table_data_in = (ObservableList) oPropertiesTable.getItems();
-                ObservableList<OPropertyNode> table_data_out = orientdb.writeOClassOProperties(oClass, new_Name, new_Description, table_data_in);
-                if (table_data_out != null) {
-                    class_node.setName(new_Name); //в классе OClass_Node
-                    ti.setValue(class_node); //в TreeItem
-                    oPropertiesTable.setItems(table_data_out);
-                }
-            }
-        } catch (Exception e) {
-            MessageBox.Show(e);
-        }
-    }
-
     /**
      * may be it's better to incorporate it in oPropertiesTable
      */
-    private OClass Last_Read_OClass = null;
+    //private OClass Last_Read_OClass = null;
 
     public void readPropertiesFromOClass(TreeTableView oClassesTree, TitledPanesHbox titledPanesHbox, boolean inNewTitledPane) {
         try {
@@ -486,7 +456,7 @@ public class OrientdbJavafx {
             if (ti != null) {
                 OClass oClass = ti.getValue().getOClass();
 
-                OClassVBox oClassVBox = new OClassVBox(oClass);
+                OClassVBox oClassVBox = new OClassVBox(oClass, orientdb, oClassesTree);
                 String oClassName = oClass.getName();
                 titledPanesHbox.addNewEntityVBox(oClassVBox, oClassName, inNewTitledPane);
 
@@ -497,9 +467,9 @@ public class OrientdbJavafx {
                     for (OProperty property : properties) {
                         data_for_table.add(new OPropertyNode(oClass, property));
                     }
-                    oClassVBox.getoPropertiesTable().setItems(data_for_table);
+                    oClassVBox.getOPropertiesTable().setItems(data_for_table);
                 }
-                Last_Read_OClass = oClass;
+                //Last_Read_OClass = oClass;
             }
         } catch (Exception e) {
             MessageBox.Show(e);

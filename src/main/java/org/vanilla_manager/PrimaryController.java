@@ -274,7 +274,7 @@ public class PrimaryController {
     //----------------------------Graph DB - OClass----------------------------
 
     public void T2_Write_Properties_To_Class(ActionEvent actionEvent) {
-        orientdbJavafx.writePropertiesToOClass(oClassesTree, titledPanesHbox);
+        //orientdbJavafx.writePropertiesToOClass(oClassesTree, titledPanesHbox);
     }
 
     public void T2_Read_Properties_From_Class(ActionEvent actionEvent) {

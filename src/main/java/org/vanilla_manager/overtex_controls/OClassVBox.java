@@ -11,6 +11,9 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import org.vanilla_manager.MessageBox;
+import org.vanilla_manager.orientdb.OClassNode;
+import org.vanilla_manager.orientdb.OrientdbTalker;
 import org.vanilla_manager.orientdb.oproperty.OPropertyCustomAttribute;
 import org.vanilla_manager.orientdb.oproperty.OPropertyNode;
 import org.vanilla_manager.orientdb.oproperty.RandomGeneratorPathButton;
@@ -30,6 +33,8 @@ public class OProperty_TextArea extends TextArea
 //https://stackoverflow.com/questions/42975041/javafx-extend-button-and-add-properties-through-fxml
 public class OClassVBox extends VBox {
     private OClass oClass;
+    private OrientdbTalker orientdb;
+    private TreeTableView oClassesTree;
 
     public OClass getOClass() {
         return this.oClass;
@@ -52,14 +57,19 @@ public class OClassVBox extends VBox {
     ComboBox T2_New_Property_DataType_Combobox;
     Button T2_AddProperty_Button;
     Button T2_DeleteProperty_Button;
+    Button Save_Button;
 
-    public OClassVBox(OClass _oClass) {
+    public OClassVBox(OClass _oClass, OrientdbTalker _orientdb, TreeTableView _oClassesTree) {
         super();
         this.oClass = _oClass;
+        orientdb = _orientdb;
+        oClassesTree = _oClassesTree;
 
         String oClassName = oClass.getName();
         //titledPanesHbox.addNewEntityVBox(oClassVBox, oClassName, inNewTitledPane);
         ObservableList<Node> oClassVBoxChildren = getChildren();
+
+        this.setSpacing(10);
 
         nameLabel = new Label();
         nameLabel.setText("Name");
@@ -79,16 +89,16 @@ public class OClassVBox extends VBox {
         HBox hbox = new HBox();
         hbox.setSpacing(10);
         T2_New_PropertyName_TextField = new TextField();
-        T2_New_PropertyName_TextField.setPrefWidth(300.0);
+        //T2_New_PropertyName_TextField.setPrefWidth(300.0);
         T2_New_PropertyName_TextField.setStyle("-fx-font-size: 12px;");
         T2_New_Property_DataType_Combobox = new ComboBox();
-        T2_New_Property_DataType_Combobox.setPrefWidth(100.0);
+        //T2_New_Property_DataType_Combobox.setPrefWidth(100.0);
         T2_New_Property_DataType_Combobox.setStyle("-fx-font-size: 12px;");
         T2_New_Property_DataType_Combobox.getItems().addAll(OPropertyCustomAttribute.DataType.attribute.getPossibleValues());
         T2_New_Property_DataType_Combobox.getSelectionModel().select(0);
         T2_AddProperty_Button = new Button();
         T2_AddProperty_Button.setText("Add");
-        T2_AddProperty_Button.setPrefWidth(80.0);
+        //T2_AddProperty_Button.setPrefWidth(80.0);
         T2_AddProperty_Button.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
@@ -97,14 +107,23 @@ public class OClassVBox extends VBox {
         });
         T2_DeleteProperty_Button = new Button();
         T2_DeleteProperty_Button.setText("Delete");
-        T2_DeleteProperty_Button.setPrefWidth(80.0);
+        //T2_DeleteProperty_Button.setPrefWidth(80.0);
         T2_DeleteProperty_Button.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
                 deleteOProperty(oPropertiesTable);
             }
         });
-        hbox.getChildren().addAll(T2_New_PropertyName_TextField, T2_New_Property_DataType_Combobox, T2_AddProperty_Button, T2_DeleteProperty_Button);
+        Save_Button = new Button();
+        Save_Button.setText("Save");
+        //Save_Button.setPrefWidth(80.0);
+        Save_Button.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                writePropertiesToOClass();
+            }
+        });
+        hbox.getChildren().addAll(T2_New_PropertyName_TextField, T2_New_Property_DataType_Combobox, T2_AddProperty_Button, T2_DeleteProperty_Button, Save_Button);
 
         oClassVBoxChildren.addAll(nameLabel, nameField, descLabel, descField, oPropertiesTable, hbox);
     }
@@ -154,8 +173,9 @@ public class OClassVBox extends VBox {
     public void addOProperty(TableView<OPropertyNode> oPropertiesTable, TextField T2_New_PropertyName_TextField, ComboBox T2_New_Property_DataType_Combobox) {
         //check if we have read already some OClass once and that we haven't deleted it yet
         String OProperty_Name = T2_New_PropertyName_TextField.getText();
-        if (OProperty_Name.length() > 0 && Last_Read_OClass != null && orientdb.existsOClassExt(Last_Read_OClass)) {
-            OPropertyNode property_node = new OPropertyNode(Last_Read_OClass, OProperty_Name, "",
+        if (OProperty_Name.length() > 0 && oClass != null) {
+            // Last_Read_OClass != null && orientdb.existsOClassExt(Last_Read_OClass)) {
+            OPropertyNode property_node = new OPropertyNode(oClass, OProperty_Name, "",
                     T2_New_Property_DataType_Combobox.getSelectionModel().getSelectedItem().toString(), "");
             oPropertiesTable.getItems().add(property_node);
         }
@@ -172,13 +192,54 @@ public class OClassVBox extends VBox {
         }
     }
 
+    public void writePropertiesToOClass() {
+        /*try {
+            Object o = oClassesTree.getSelectionModel().getSelectedItem();
+            TreeItem<OClassNode> ti = (TreeItem<OClassNode>) o;
+            if (ti != null && OClass_Name_Is_Forbidden(ti.getValue().getName()) == false) {
+                OClassNode class_node = ti.getValue();
+                OClass oClass = class_node.getOClass();*/
+
+        var hi = oClassesTree.getRoot().getChildren();
+        TreeItem<OClassNode> ti = findTreeTableViewItem(oClassesTree.getRoot(), oClass);
+        String new_Name = nameField.getText();
+        String new_Description = descField.getText();
+
+        ObservableList<OPropertyNode> table_data_in = (ObservableList) oPropertiesTable.getItems();
+        ObservableList<OPropertyNode> table_data_out = orientdb.writeOClassOProperties(oClass, new_Name, new_Description, table_data_in);
+        if (table_data_out != null) {
+            if (ti != null) {
+                OClassNode class_node = ti.getValue();
+                class_node.setName(new_Name); //в классе OClass_Node
+                ti.setValue(class_node); //в TreeItem
+            }
+            oPropertiesTable.setItems(table_data_out);
+        }
+    }
+
+    private TreeItem<OClassNode> findTreeTableViewItem(TreeItem<OClassNode> root, OClass oClass) {
+        TreeItem<OClassNode> result = null;
+        if (root.getChildren() != null) {
+            for (TreeItem<OClassNode> ti : root.getChildren()) {
+                OClass tiOClass = ti.getValue().getOClass();
+                if (tiOClass == oClass) {
+                    result = ti;
+                    break;
+                } else {
+                    result = findTreeTableViewItem(ti, oClass);
+                }
+            }
+        }
+        return result;
+    }
+
     /*******************************/
 
-    public TableView<OPropertyNode> getoPropertiesTable() {
+    public TableView<OPropertyNode> getOPropertiesTable() {
         return oPropertiesTable;
     }
 
-    public void setoPropertiesTable(TableView<OPropertyNode> oPropertiesTable) {
+    public void setOPropertiesTable(TableView<OPropertyNode> oPropertiesTable) {
         this.oPropertiesTable = oPropertiesTable;
     }
 }
