@@ -15,6 +15,7 @@ import javafx.scene.shape.SVGPath;
 import javafx.util.Callback;
 import org.vanilla_manager.MessageBox;
 import org.vanilla_manager.ResourcesManager;
+import org.vanilla_manager.orientdb.extra_controls.SVGButton;
 
 import java.io.File;
 import java.util.Optional;
@@ -82,7 +83,7 @@ public class RandomGeneratorPathButton extends Button {
             text1.setPrefWidth(400);
 
             String svg = "icons/GUI/open_file_1.svg";
-            Button buttonChangePath = ResourcesManager.newButtonWithSVG(svg, 25 , "#999999", "#9283d8");
+            SVGButton buttonChangePath = new SVGButton(svg, 25 , "#999999", "#9283d8");
 
             VBox vbox = new VBox();
             ObservableList<javafx.scene.Node> vbox_children = vbox.getChildren();

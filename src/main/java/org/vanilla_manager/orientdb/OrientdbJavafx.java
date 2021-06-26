@@ -14,12 +14,9 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.util.Callback;
 import org.vanilla_manager.MessageBox;
-import org.vanilla_manager.overtex_controls.OClassVBox;
-import org.vanilla_manager.overtex_controls.OPropertyTextArea;
-import org.vanilla_manager.overtex_controls.OVertexVBox;
+import org.vanilla_manager.overtex_controls.*;
 import org.vanilla_manager.orientdb.oproperty.OPropertyCustomAttribute;
 import org.vanilla_manager.orientdb.oproperty.OPropertyNode;
-import org.vanilla_manager.overtex_controls.TitledPanesHbox;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -75,7 +72,7 @@ public class OrientdbJavafx {
 
         oVerticesTree.setRoot(root);
         oVerticesTree.getColumns().setAll(name_column, oclass_column, rid_column);
-        oVerticesTree.setPrefWidth(152);
+        //oVerticesTree.setPrefWidth(152);
         oVerticesTree.setShowRoot(true);
     }
 
@@ -120,7 +117,7 @@ public class OrientdbJavafx {
 
         oClassesTree.setRoot(root); //root
         oClassesTree.getColumns().setAll(name_column/*, rid_column*/);
-        oClassesTree.setPrefWidth(152);
+        //oClassesTree.setPrefWidth(152);
         oClassesTree.setShowRoot(true);
     }
 
@@ -340,7 +337,7 @@ public class OrientdbJavafx {
 
     static String oVertexVBoxNameTextField = "oVertexVBoxNameTextField";
 
-    public void writeOPropertiesDataToOVertex(TreeTableView oVerticesTree, TitledPanesHbox titledPanesHbox) {
+    public void saveOPropertiesDataToOVertex(TreeTableView oVerticesTree, TitledEntitiesPanes titledPanesHbox) {
         try {
             Object o = oVerticesTree.getSelectionModel().getSelectedItem();
             TreeItem<OVertexNode> ti = (TreeItem<OVertexNode>) o;
@@ -349,7 +346,7 @@ public class OrientdbJavafx {
                 OVertex oVertex = oVertexTINode.getVertex();
                 OClass oClass = orientdb.getOElementOClassExt(oVertex);
 
-                ObservableList<javafx.scene.Node> vboxChildren = titledPanesHbox.getActivePaneVBox().getChildren();
+                ObservableList<javafx.scene.Node> vboxChildren = titledPanesHbox.getActivePane().getEntitiesVBoxCollection();
                 Optional<javafx.scene.Node> findOVertexVBox = vboxChildren.parallelStream().filter(s ->
                         s instanceof OVertexVBox && ((OVertexVBox) s).getOVertex() == oVertex).findFirst();
                 if (findOVertexVBox.isPresent()) {
@@ -391,7 +388,7 @@ public class OrientdbJavafx {
         }
     }
 
-    public void readOPropertiesDataFromOVertex(TreeTableView oVerticesTree, TitledPanesHbox titledPanesHbox, boolean inNewTitledPane) {
+    public void readOPropertiesDataFromOVertex(TreeTableView oVerticesTree, TitledEntitiesPanes titledPanes, boolean inNewTitledPane) {
         try {
             Object o = oVerticesTree.getSelectionModel().getSelectedItem();
             TreeItem<OVertexNode> ti = (TreeItem<OVertexNode>) o;
@@ -399,7 +396,7 @@ public class OrientdbJavafx {
                 OVertex oVertex = ti.getValue().getVertex();
                 OVertexVBox oVertexVBox = new OVertexVBox(oVertex);
                 String oVertexName = orientdb.getOVertexName(oVertex);
-                titledPanesHbox.addNewEntityVBox(oVertexVBox, oVertexName, inNewTitledPane);
+                ScrollableTitledEntityPane scrollableTitledEntityPane = titledPanes.addNewEntityVBox(oVertexVBox, oVertexName, inNewTitledPane);
                 ObservableList<javafx.scene.Node> oVertexVBoxChildren = oVertexVBox.getChildren();
 
                 Label nameLabel = new Label();
@@ -407,6 +404,8 @@ public class OrientdbJavafx {
                 TextField nameField = new TextField();
                 nameField.setId(oVertexVBoxNameTextField);
                 nameField.setText(oVertexName);
+                //nameField.minWidthProperty().bind(scrollableTitledEntityPane.entityInnerWidthProperty());
+                //nameField.maxWidthProperty().bind(scrollableTitledEntityPane.entityInnerWidthProperty());
                 oVertexVBoxChildren.addAll(nameLabel, nameField);
 
                 Collection<OProperty> Properties = orientdb.getOClassOProperties(oVertex);
@@ -420,6 +419,8 @@ public class OrientdbJavafx {
                         String s_value = (String) value;
                         OPropertyTextArea TA = new OPropertyTextArea(property);
                         TA.setText(s_value);
+                        //TA.minWidthProperty().bind(scrollableTitledEntityPane.entityInnerWidthProperty());
+                        //TA.maxWidthProperty().bind(scrollableTitledEntityPane.entityInnerWidthProperty());
                         oVertexVBoxChildren.addAll(label, TA);
                     }
                 }
@@ -449,7 +450,7 @@ public class OrientdbJavafx {
      */
     //private OClass Last_Read_OClass = null;
 
-    public void readPropertiesFromOClass(TreeTableView oClassesTree, TitledPanesHbox titledPanesHbox, boolean inNewTitledPane) {
+    public void readPropertiesFromOClass(TreeTableView oClassesTree, TitledEntitiesPanes titledPanesHbox, boolean inNewTitledPane) {
         try {
             Object o = oClassesTree.getSelectionModel().getSelectedItem();
             TreeItem<OClassNode> ti = (TreeItem<OClassNode>) o;
@@ -458,7 +459,7 @@ public class OrientdbJavafx {
 
                 OClassVBox oClassVBox = new OClassVBox(oClass, orientdb, oClassesTree);
                 String oClassName = oClass.getName();
-                titledPanesHbox.addNewEntityVBox(oClassVBox, oClassName, inNewTitledPane);
+                ScrollableTitledEntityPane scrollableTitledEntityPane = titledPanesHbox.addNewEntityVBox(oClassVBox, oClassName, inNewTitledPane);
 
                 Collection<OProperty> properties = orientdb.readOClassOProperties(oClass);
                 final ObservableList<OPropertyNode> data_for_table = FXCollections.observableArrayList();

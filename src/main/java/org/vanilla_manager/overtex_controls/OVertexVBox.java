@@ -1,7 +1,6 @@
 package org.vanilla_manager.overtex_controls;
 
 import com.orientechnologies.orient.core.record.OVertex;
-import javafx.scene.layout.VBox;
 
 /*@DefaultProperty(value = "extension")
 public class OProperty_TextArea extends TextArea
@@ -16,9 +15,12 @@ public class OProperty_TextArea extends TextArea
 }*/
 
 //https://stackoverflow.com/questions/42975041/javafx-extend-button-and-add-properties-through-fxml
-public class OVertexVBox extends VBox {
+
+/**
+ * Vertically aligned Box for OVertex Properties
+ */
+public class OVertexVBox extends EntityVBox {
     private OVertex oVertex;
-    //public final ObjectProperty<Enum<?>> buttonState = new SimpleObjectProperty<>(ButtonState.NORMAL);
 
     public OVertex getOVertex() {
         return this.oVertex;

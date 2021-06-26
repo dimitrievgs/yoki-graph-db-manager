@@ -3,12 +3,16 @@ package org.vanilla_manager;
 import java.io.IOException;
 
 import javafx.beans.binding.DoubleBinding;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
@@ -16,8 +20,9 @@ import javafx.stage.Stage;
 import javafx.scene.web.HTMLEditor;
 import javafx.stage.WindowEvent;
 import org.vanilla_manager.orientdb.*;
+import org.vanilla_manager.orientdb.extra_controls.SVGButton;
 import org.vanilla_manager.orientdb.oproperty.OPropertyNode;
-import org.vanilla_manager.overtex_controls.TitledPanesHbox;
+import org.vanilla_manager.overtex_controls.TitledEntitiesPanes;
 
 public class PrimaryController {
     public HBox T1_RecordName_parent;
@@ -26,19 +31,24 @@ public class PrimaryController {
     public HBox T2_RecordName_parent;
     //public TextField T2_OClass_Name_TextField;
     public TableView<OPropertyNode> oPropertiesTable;
+    public Tab r2;
+    public VBox leftVBox;
+    public VBox OClassesTabVBox;
+    public VBox rightVBox;
+    public ToolBar toolbarBottom;
     //public TextArea T2_OClass_Description_TextField;
     //public ComboBox T2_New_Property_DataType_Combobox;
     //public TextField T2_New_PropertyName_TextField;
     @FXML
-    private TabPane tabpane1;
+    private TabPane controlTabPane;
     @FXML
     private VBox OVertexTabVBox;
     @FXML
-    private Pane pane1;
+    private Pane centerPane;
     @FXML
-    private HBox hbox0;
+    private SplitPane centerSplitPane;
     @FXML
-    private TitledPanesHbox titledPanesHbox;
+    private TitledEntitiesPanes titledEntitiesPanes;
     @FXML
     private MenuBar menubar1;
     @FXML
@@ -79,6 +89,7 @@ public class PrimaryController {
         bindCSSClasses();
         addMenu();
         setTextInControls();
+        addLeftVBoxButtons();
     }
 
     //https://stackoverflow.com/questions/13246211/javafx-how-to-get-stage-from-controller-during-initialization
@@ -92,11 +103,15 @@ public class PrimaryController {
 
     private void bindCSSClasses() {
         //tabpane1.getStyleClass().clear();
-        tabpane1.getStyleClass().add("tabpane1");
-        hbox0.getStyleClass().add("vbox0");
+        controlTabPane.getStyleClass().add("tabpane1");
+        centerSplitPane.getStyleClass().add("vbox0");
         oVerticesTree.getStyleClass().add("treetableview1");
-        //tab1_hbox0.getStyleClass().add("tab1_hbox0");
         OVertexTabVBox.getStyleClass().add("T1_vbox1");
+        leftVBox.getStyleClass().add("leftVBox");
+        rightVBox.getStyleClass().add("rightVBox");
+        menubar1.getStyleClass().add("menubar1");
+        toolbarBottom.getStyleClass().add("toolbarBottom");
+        titledEntitiesPanes.getStyleClass().add("titledEntitiesPanes");
     }
 
     private void addMenu() {
@@ -136,32 +151,76 @@ public class PrimaryController {
         //add images for htmleditor: https://stackoverflow.com/questions/10968000/javafx-htmleditor-insert-image-function
     }
 
-    int treetableview_width = 300;
+    private int leftVBoxWidth = 40;
+    private int leftVBoxPTop = 12, leftVBoxPRight = 5, leftVBoxPBottom = 12, leftVBoxPLeft = 5;
+
+    private void addLeftVBoxButtons() {
+        leftVBox.setPrefWidth(leftVBoxWidth);
+        leftVBox.setPadding(new Insets(leftVBoxPTop, leftVBoxPRight, leftVBoxPBottom, leftVBoxPLeft));
+
+        int btnHeight = leftVBoxWidth - leftVBoxPLeft - leftVBoxPRight;
+
+        String svg = "icons/GUI/expand_collapse_treetableviews.svg";
+        SVGButton expandCollapseTabPane = new SVGButton(svg, btnHeight, "#999999", "#9283d8", "#9283d8", true);
+        expandCollapseTabPane.addEventFilter(MouseEvent.MOUSE_CLICKED, (MouseEvent event) -> {
+            if (event.getButton() == MouseButton.PRIMARY) {
+                if (expandCollapseTabPane.getValue())
+                {
+                    centerSplitPane.setDividerPositions(0.0);
+                }
+                else
+                {
+                    centerSplitPane.setDividerPositions(startPosForCenterSplitPane);
+                }
+            }
+        });
+        leftVBox.getChildren().addAll(expandCollapseTabPane);
+    }
+
+    //int treetableview_width = 300;
+    double startPosForCenterSplitPane = 0.2;
 
     private void setSizesLocations() {
-        menubar1.prefWidthProperty().bind(stage.widthProperty());
-        hbox0.prefWidthProperty().bind(stage.widthProperty());
-        hbox0.prefHeightProperty().bind(stage.heightProperty());
-        T1_RecordName.minWidthProperty().bind(T1_RecordName_parent.widthProperty()); //с prefHeightProperty не работает
-        T2_RecordName.minWidthProperty().bind(T2_RecordName_parent.widthProperty()); //с prefHeightProperty не работает
+        centerSplitPane.prefWidthProperty().bind(centerPane.widthProperty());
+        centerSplitPane.prefHeightProperty().bind(centerPane.heightProperty());
+        T1_RecordName.prefWidthProperty().bind(OVertexTabVBox.widthProperty()); //doesn't work with prefHeightProperty
+        T2_RecordName.prefWidthProperty().bind(OClassesTabVBox.widthProperty()); //doesn't work with prefHeightProperty
+        oVerticesTree.prefWidthProperty().bind(OVertexTabVBox.widthProperty());
+        oClassesTree.prefWidthProperty().bind(OClassesTabVBox.widthProperty());
 
-        DoubleBinding foo = new DoubleBinding() {
+        DoubleBinding oVerticesTreeHB = new DoubleBinding() {
             {
-                super.bind(stage.widthProperty());
+                super.bind(OVertexTabVBox.heightProperty());
             }
 
             @Override
             protected double computeValue() {
-                return stage.widthProperty().getValue() - OVertexTabVBox.widthProperty().getValue()
-                        /*- OVertexTabVBox.getSpacing()*/ /*- OVertexTabVBox.getPadding().getLeft()*/ - 16; //where is this shift from??
+                return OVertexTabVBox.heightProperty().getValue() - oVerticesTree.layoutYProperty().getValue();
             }
         };
-        titledPanesHbox.prefWidthProperty().bind(foo);
+        oVerticesTree.prefHeightProperty().bind(oVerticesTreeHB);
 
-        oVerticesTree.setMinWidth(treetableview_width);
-        oClassesTree.setMinWidth(treetableview_width);
+        DoubleBinding oClassesTreeHB = new DoubleBinding() {
+            {
+                super.bind(OClassesTabVBox.heightProperty());
+            }
 
-        T1_RecordName.setMaxWidth(100);
+            @Override
+            protected double computeValue() {
+                return OClassesTabVBox.heightProperty().getValue() - oClassesTree.layoutYProperty().getValue();
+            }
+        };
+        oClassesTree.prefHeightProperty().bind(oClassesTreeHB);
+
+        stage.showingProperty().addListener(new ChangeListener<Boolean>() {
+            @Override
+            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+                if (newValue) {
+                    centerSplitPane.setDividerPositions(startPosForCenterSplitPane);
+                    observable.removeListener(this);
+                }
+            }
+        });
     }
 
 
@@ -179,7 +238,7 @@ public class PrimaryController {
         //Disable TreeItem's default expand/collapse on double click (JavaFX 8): https://stackoverflow.com/questions/46436974/disable-treeitems-default-expand-collapse-on-double-click-javafx-8
         oVerticesTree.addEventFilter(MouseEvent.MOUSE_PRESSED, (MouseEvent event) -> {
             if (event.getClickCount() % 2 == 0 && event.isPrimaryButtonDown()) {
-                orientdbJavafx.readOPropertiesDataFromOVertex(oVerticesTree, titledPanesHbox, event.isControlDown());
+                orientdbJavafx.readOPropertiesDataFromOVertex(oVerticesTree, titledEntitiesPanes, event.isControlDown());
                 event.consume();
             }
         });
@@ -187,7 +246,7 @@ public class PrimaryController {
         //Prevent expand of child nodes after mouse double-click
         oClassesTree.addEventFilter(MouseEvent.MOUSE_PRESSED, (MouseEvent event) -> {
             if (event.getClickCount() % 2 == 0 && event.isPrimaryButtonDown()) {
-                T2_Read_Properties_From_Class(null);
+                orientdbJavafx.readPropertiesFromOClass(oClassesTree, titledEntitiesPanes, event.isControlDown());
                 event.consume();
             }
         });
@@ -263,11 +322,11 @@ public class PrimaryController {
     }
 
     public void T1_Write_Properties_Data_To_OVertex(ActionEvent actionEvent) {
-        orientdbJavafx.writeOPropertiesDataToOVertex(oVerticesTree, titledPanesHbox);
+        orientdbJavafx.saveOPropertiesDataToOVertex(oVerticesTree, titledEntitiesPanes);
     }
 
     public void T1_Read_Properties_Data_From_OVertex(ActionEvent actionEvent) {
-        orientdbJavafx.readOPropertiesDataFromOVertex(oVerticesTree, titledPanesHbox, false);
+        orientdbJavafx.readOPropertiesDataFromOVertex(oVerticesTree, titledEntitiesPanes, false);
     }
 
     //-------------------------------------------------------------------------
@@ -278,7 +337,7 @@ public class PrimaryController {
     }
 
     public void T2_Read_Properties_From_Class(ActionEvent actionEvent) {
-        orientdbJavafx.readPropertiesFromOClass(oClassesTree, titledPanesHbox, false);
+        orientdbJavafx.readPropertiesFromOClass(oClassesTree, titledEntitiesPanes, false);
     }
 
     public void T2_Add_OClass(ActionEvent actionEvent) {

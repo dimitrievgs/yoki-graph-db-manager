@@ -1,7 +1,6 @@
 package org.vanilla_manager.overtex_controls;
 
 import com.orientechnologies.orient.core.metadata.schema.OClass;
-import com.orientechnologies.orient.core.record.OVertex;
 import javafx.beans.binding.Bindings;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -10,8 +9,6 @@ import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
-import org.vanilla_manager.MessageBox;
 import org.vanilla_manager.orientdb.OClassNode;
 import org.vanilla_manager.orientdb.OrientdbTalker;
 import org.vanilla_manager.orientdb.oproperty.OPropertyCustomAttribute;
@@ -31,7 +28,10 @@ public class OProperty_TextArea extends TextArea
 }*/
 
 //https://stackoverflow.com/questions/42975041/javafx-extend-button-and-add-properties-through-fxml
-public class OClassVBox extends VBox {
+/**
+ * Vertically aligned Box for OClass Properties
+ */
+public class OClassVBox extends EntityVBox {
     private OClass oClass;
     private OrientdbTalker orientdb;
     private TreeTableView oClassesTree;
@@ -120,7 +120,7 @@ public class OClassVBox extends VBox {
         Save_Button.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                writePropertiesToOClass();
+                savePropertiesToOClass();
             }
         });
         hbox.getChildren().addAll(T2_New_PropertyName_TextField, T2_New_Property_DataType_Combobox, T2_AddProperty_Button, T2_DeleteProperty_Button, Save_Button);
@@ -192,7 +192,7 @@ public class OClassVBox extends VBox {
         }
     }
 
-    public void writePropertiesToOClass() {
+    public void savePropertiesToOClass() {
         /*try {
             Object o = oClassesTree.getSelectionModel().getSelectedItem();
             TreeItem<OClassNode> ti = (TreeItem<OClassNode>) o;

@@ -29,120 +29,121 @@
 <?import javafx.scene.control.ToggleButton?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.ComboBox?>
-<?import org.vanilla_manager.overtex_controls.TitledPanesHbox?>
-<Pane fx:id="pane1" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
+<?import org.vanilla_manager.overtex_controls.TitledEntitiesPanes?>
+<?import javafx.scene.layout.BorderPane?>
 
-      xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="org.vanilla_manager.PrimaryController"><!--prefHeight="875.0" prefWidth="934.0"-->
-    <!-- spacing="0.0"  alignment="CENTER" -->
-    <children>
-        <MenuBar fx:id="menubar1"/>
-        <HBox fx:id="hbox0" layoutX="0.0" layoutY="24.0">
-            <!--<ToolBar >
-                <Button fx:id="bManageElements" text="Manage Elements" onAction="#ManageElements"/>
-                <Button fx:id="bManageClasses" text="Manage Classes" onAction="#ManageClasses"/>
-            </ToolBar>-->
-            <TabPane fx:id="tabpane1">
-                <Tab text="Manage Records">
-                    <VBox fx:id="OVertexTabVBox" prefHeight="171.0" prefWidth="200.0"
-                          spacing="10">
-                        <children>
-                            <HBox fx:id="T1_RecordName_parent">
-                                <TextField fx:id="T1_RecordName"/>
-                            </HBox>
-                            <HBox spacing="10">
-                                <ToggleButton fx:id="T1_bLoad_DB_Toggle" text="Plain (all)"
-                                              minWidth="80"/>
-                                <Button fx:id="T1_bLoadDB" text="Reload" onAction="#T1_LoadDB" minWidth="80"/>
-                                <Button fx:id="T1_bReadTextFromRecord" text="Read"
-                                        onAction="#T1_Read_Properties_Data_From_OVertex" minWidth="80"/>
-                                <Button fx:id="T1_bSetTextToRecord" text="Write"
-                                        onAction="#T1_Write_Properties_Data_To_OVertex"
-                                        minWidth="80"/>
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0"
+            prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="org.vanilla_manager.PrimaryController">
+    <left>
+        <VBox fx:id="leftVBox" prefWidth="40.0" BorderPane.alignment="CENTER">
+        </VBox>
+    </left>
+    <right>
+        <VBox fx:id="rightVBox" prefWidth="40.0" BorderPane.alignment="CENTER"/>
+    </right>
+    <center>
+        <Pane fx:id="centerPane" BorderPane.alignment="CENTER" >
+            <!--xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="org.vanilla_manager.PrimaryController"-->
+            <children>
+                <SplitPane fx:id="centerSplitPane" dividerPositions="0.25">
+                    <TabPane fx:id="controlTabPane">
+                        <Tab fx:id="r2" text="Manage Records">
+                            <VBox fx:id="OVertexTabVBox" spacing="10">
+                                <children>
+                                    <HBox fx:id="T1_RecordName_parent">
+                                        <TextField fx:id="T1_RecordName"/>
+                                    </HBox>
+                                    <HBox spacing="10">
+                                        <ToggleButton fx:id="T1_bLoad_DB_Toggle" text="Plain (all)"
+                                                      minWidth="80"/>
+                                        <Button fx:id="T1_bLoadDB" text="Reload" onAction="#T1_LoadDB" minWidth="80"/>
+                                        <Button fx:id="T1_bReadTextFromRecord" text="Read"
+                                                onAction="#T1_Read_Properties_Data_From_OVertex" minWidth="80"/>
+                                        <Button fx:id="T1_bSetTextToRecord" text="Write"
+                                                onAction="#T1_Write_Properties_Data_To_OVertex"
+                                                minWidth="80"/>
+                                        <padding>
+                                            <Insets bottom="0.0" left="0.0" right="0.0" top="0.0"/>
+                                        </padding>
+                                    </HBox>
+                                    <HBox spacing="10">
+                                        <Button fx:id="T1_bDuplicateRecord" text="Duplicate"
+                                                onAction="#T1_Duplicate_OVertex"
+                                                minWidth="80"/>
+                                        <Button fx:id="T1_bDeleteRecord" text="Delete" onAction="#T1_Delete_OVertex"
+                                                minWidth="80"/>
+                                        <Button fx:id="T1_bAddRecord" text="Add" onAction="#T1_Add_OVertex"
+                                                minWidth="80"/>
+                                        <padding>
+                                            <Insets bottom="0.0" left="0.0" right="0.0" top="0.0"/>
+                                        </padding>
+                                    </HBox>
+                                    <TreeTableView fx:id="oVerticesTree" prefWidth="200.0"></TreeTableView>
+                                </children>
                                 <padding>
-                                    <Insets bottom="0.0" left="0.0" right="0.0" top="0.0"/>
+                                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
                                 </padding>
-                            </HBox>
-                            <HBox spacing="10">
-                                <Button fx:id="T1_bDuplicateRecord" text="Duplicate"
-                                        onAction="#T1_Duplicate_OVertex"
-                                        minWidth="80"/>
-                                <Button fx:id="T1_bDeleteRecord" text="Delete" onAction="#T1_Delete_OVertex"
-                                        minWidth="80"/>
-                                <Button fx:id="T1_bAddRecord" text="Add" onAction="#T1_Add_OVertex" minWidth="80"/>
+                            </VBox>
+                        </Tab>
+                        <Tab text="Manage Classes">
+                            <VBox fx:id="OClassesTabVBox" spacing="10">
+                                <children>
+                                    <HBox fx:id="T2_RecordName_parent">
+                                        <TextField fx:id="T2_RecordName"/>
+                                    </HBox>
+                                    <HBox spacing="10">
+                                        <Button fx:id="T2_bReadDB" text="Reload" onAction="#T2_LoadDB" minWidth="80"/>
+                                        <Button fx:id="T2_bReadTextFromRecord" text="Read"
+                                                onAction="#T2_Read_Properties_From_Class" minWidth="80"/>
+                                        <Button fx:id="T2_bSetTextToRecord" text="Write"
+                                                onAction="#T2_Write_Properties_To_Class"
+                                                minWidth="80"/>
+                                        <padding>
+                                            <Insets bottom="0.0" left="0.0" right="0.0" top="0.0"/>
+                                        </padding>
+                                    </HBox>
+                                    <HBox spacing="10">
+                                        <Button fx:id="T2_bDuplicateRecord" text="Duplicate"
+                                                onAction="#T2_Duplicate_OClass"
+                                                minWidth="80"/>
+                                        <Button fx:id="T2_bDeleteRecord" text="Delete" onAction="#T2_Delete_OClass"
+                                                minWidth="80"/>
+                                        <Button fx:id="T2_bAddRecord" text="Add" onAction="#T2_Add_OClass"
+                                                minWidth="80"/>
+                                        <padding>
+                                            <Insets bottom="0.0" left="0.0" right="0.0" top="0.0"/>
+                                        </padding>
+                                    </HBox>
+                                    <TreeTableView fx:id="oClassesTree" prefWidth="200.0"></TreeTableView>
+                                </children>
                                 <padding>
-                                    <Insets bottom="0.0" left="0.0" right="0.0" top="0.0"/>
+                                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
                                 </padding>
-                            </HBox>
-                            <TreeTableView fx:id="oVerticesTree" prefWidth="200.0"></TreeTableView>
-                        </children>
+                            </VBox>
+                        </Tab>
+                    </TabPane>
+                    <TitledEntitiesPanes fx:id="titledEntitiesPanes" >
+                        <items>
+                        </items>
                         <padding>
-                            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+                            <Insets bottom="0.0" left="0.0" right="0.0" top="0.0"/>
                         </padding>
-                    </VBox>
-                </Tab>
-                <Tab text="Manage Classes">
-                    <VBox fx:id="OClassesTabVBox" prefHeight="171.0" prefWidth="200.0"
-                          spacing="10">
-                        <children>
-                            <HBox fx:id="T2_RecordName_parent">
-                                <TextField fx:id="T2_RecordName"/>
-                            </HBox>
-                            <HBox spacing="10">
-                                <Button fx:id="T2_bReadDB" text="Reload" onAction="#T2_LoadDB" minWidth="80"/>
-                                <Button fx:id="T2_bReadTextFromRecord" text="Read"
-                                        onAction="#T2_Read_Properties_From_Class" minWidth="80"/>
-                                <Button fx:id="T2_bSetTextToRecord" text="Write"
-                                        onAction="#T2_Write_Properties_To_Class"
-                                        minWidth="80"/>
-                                <padding>
-                                    <Insets bottom="0.0" left="0.0" right="0.0" top="0.0"/>
-                                </padding>
-                            </HBox>
-                            <HBox spacing="10">
-                                <Button fx:id="T2_bDuplicateRecord" text="Duplicate" onAction="#T2_Duplicate_OClass"
-                                        minWidth="80"/>
-                                <Button fx:id="T2_bDeleteRecord" text="Delete" onAction="#T2_Delete_OClass"
-                                        minWidth="80"/>
-                                <Button fx:id="T2_bAddRecord" text="Add" onAction="#T2_Add_OClass" minWidth="80"/>
-                                <padding>
-                                    <Insets bottom="0.0" left="0.0" right="0.0" top="0.0"/>
-                                </padding>
-                            </HBox>
-                            <TreeTableView fx:id="oClassesTree" prefWidth="200.0"></TreeTableView>
-                        </children>
-                        <padding>
-                            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
-                        </padding>
-                    </VBox>
-                    <!--<VBox fx:id="T2_vbox2" spacing="10">
-                        <TextField fx:id="T2_OClass_Name_TextField" text="" style="-fx-font-size: 24px;"/>
-                        <TextArea fx:id="T2_OClass_Description_TextField" text="" style="-fx-font-size: 14px;"
-                                  prefRowCount="2"/>
-                        <TableView fx:id="oPropertiesTable"/>
-                        <HBox spacing="10">
-                            <TextField fx:id="T2_New_PropertyName_TextField" text="" prefWidth="300.0"
-                                       style="-fx-font-size: 12px;"/>
-                            <ComboBox fx:id="T2_New_Property_DataType_Combobox" prefWidth="100.0"
-                                      style="-fx-font-size: 12px;"/>
-                            <Button fx:id="T2_AddProperty_Button" text="Add" onAction="#T2_AddProperty"
-                                    minWidth="80"/>
-                            <Button fx:id="T2_DeleteProperty_Button" text="Delete" onAction="#T2_DeleteProperty"
-                                    minWidth="80"/>
-                        </HBox>
-                    </VBox>-->
-                </Tab>
-            </TabPane>
-            <TitledPanesHbox fx:id="titledPanesHbox" spacing="0">
-                <children>
-                </children>
-                <padding>
-                    <Insets bottom="0.0" left="0.0" right="0.0" top="0.0"/>
-                </padding>
-            </TitledPanesHbox>
-        </HBox>
-    </children>
-    <padding>
-        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>
-    </padding>
-</Pane>
+                    </TitledEntitiesPanes>
+                </SplitPane>
+            </children>
+            <padding>
+                <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>
+            </padding>
+        </Pane>
+    </center>
+    <top>
+        <!--<HBox prefHeight="100.0" prefWidth="200.0" BorderPane.alignment="CENTER"/>-->
+        <MenuBar fx:id="menubar1" BorderPane.alignment="CENTER"/>
+    </top>
+    <bottom>
+        <!--<HBox prefHeight="100.0" prefWidth="200.0" BorderPane.alignment="CENTER"/>-->
+        <ToolBar fx:id="toolbarBottom" prefHeight="25.0" BorderPane.alignment="CENTER"/>
+    </bottom>
+</BorderPane>
