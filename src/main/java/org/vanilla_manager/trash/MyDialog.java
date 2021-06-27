@@ -1,4 +1,4 @@
-package org.vanilla_manager;
+package org.vanilla_manager.trash;
 
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Dialog;
@@ -6,6 +6,7 @@ import javafx.scene.control.DialogPane;
 import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
+import org.vanilla_manager.dialogs.MessageBox;
 
 import java.io.IOException;
 

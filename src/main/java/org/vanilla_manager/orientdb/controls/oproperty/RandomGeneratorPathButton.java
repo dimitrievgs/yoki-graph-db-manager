@@ -1,23 +1,16 @@
-package org.vanilla_manager.orientdb.oproperty;
+package org.vanilla_manager.orientdb.controls.oproperty;
 
 import com.orientechnologies.orient.core.metadata.schema.OClass;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.geometry.Bounds;
-import javafx.geometry.Pos;
 import javafx.scene.control.*;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.scene.shape.SVGPath;
 import javafx.util.Callback;
-import org.vanilla_manager.MessageBox;
-import org.vanilla_manager.ResourcesManager;
-import org.vanilla_manager.orientdb.extra_controls.SVGButton;
+import org.vanilla_manager.dialogs.MessageBox;
+import org.vanilla_manager.extra_controls.SVGButton;
 
-import java.io.File;
 import java.util.Optional;
 
 //https://stackoverflow.com/questions/42975041/javafx-extend-button-and-add-properties-through-fxml
@@ -83,7 +76,7 @@ public class RandomGeneratorPathButton extends Button {
             text1.setPrefWidth(400);
 
             String svg = "icons/GUI/open_file_1.svg";
-            SVGButton buttonChangePath = new SVGButton(svg, 25 , "#999999", "#9283d8");
+            SVGButton buttonChangePath = new SVGButton(svg, 25 , SVGButton.ScaleOn.Height, "#999999", "#9283d8");
 
             VBox vbox = new VBox();
             ObservableList<javafx.scene.Node> vbox_children = vbox.getChildren();

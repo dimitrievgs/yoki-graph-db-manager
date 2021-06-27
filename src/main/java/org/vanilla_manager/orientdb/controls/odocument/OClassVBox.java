@@ -1,4 +1,4 @@
-package org.vanilla_manager.overtex_controls;
+package org.vanilla_manager.orientdb.controls.odocument;
 
 import com.orientechnologies.orient.core.metadata.schema.OClass;
 import javafx.beans.binding.Bindings;
@@ -9,29 +9,17 @@ import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.layout.HBox;
-import org.vanilla_manager.orientdb.OClassNode;
 import org.vanilla_manager.orientdb.OrientdbTalker;
-import org.vanilla_manager.orientdb.oproperty.OPropertyCustomAttribute;
-import org.vanilla_manager.orientdb.oproperty.OPropertyNode;
-import org.vanilla_manager.orientdb.oproperty.RandomGeneratorPathButton;
-
-/*@DefaultProperty(value = "extension")
-public class OProperty_TextArea extends TextArea
-{
-    @FXML
-    private HBox extension;
-
-    public ObservableList<Node> getExtension() {
-        return extension.getChildren();
-    }
-    // ... more component specific code
-}*/
+import org.vanilla_manager.orientdb.controls.oproperty.OPropertyCustomAttribute;
+import org.vanilla_manager.orientdb.controls.oproperty.OPropertyNode;
+import org.vanilla_manager.orientdb.controls.oproperty.RandomGeneratorPathButton;
+import org.vanilla_manager.orientdb.treetableview.OClassNode;
 
 //https://stackoverflow.com/questions/42975041/javafx-extend-button-and-add-properties-through-fxml
 /**
  * Vertically aligned Box for OClass Properties
  */
-public class OClassVBox extends EntityVBox {
+public class OClassVBox extends ODocumentVBox {
     private OClass oClass;
     private OrientdbTalker orientdb;
     private TreeTableView oClassesTree;
@@ -233,7 +221,8 @@ public class OClassVBox extends EntityVBox {
         return result;
     }
 
-    /*******************************/
+    //-------------------------------------------------------------------------
+    //----------------------------------*****----------------------------------
 
     public TableView<OPropertyNode> getOPropertiesTable() {
         return oPropertiesTable;

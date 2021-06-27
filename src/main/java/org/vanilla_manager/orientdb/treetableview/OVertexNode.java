@@ -1,4 +1,4 @@
-package org.vanilla_manager.orientdb;
+package org.vanilla_manager.orientdb.treetableview;
 
 import com.orientechnologies.orient.core.id.ORID;
 import com.orientechnologies.orient.core.id.ORecordId;
@@ -6,6 +6,7 @@ import com.orientechnologies.orient.core.metadata.schema.OClass;
 import com.orientechnologies.orient.core.record.OVertex;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.scene.control.TreeItem;
+import org.vanilla_manager.orientdb.OrientdbTalker;
 
 import java.util.ArrayList;
 import java.util.List;

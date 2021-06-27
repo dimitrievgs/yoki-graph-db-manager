@@ -1,30 +1,11 @@
 package org.vanilla_manager;
 
-import javafx.beans.value.ChangeListener;
-import javafx.geometry.Bounds;
-import javafx.geometry.Pos;
-import javafx.scene.control.Button;
-import javafx.scene.control.ContentDisplay;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.Border;
-import javafx.scene.shape.SVGPath;
-import org.w3c.dom.Document;
-import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import java.io.*;
-import java.net.URISyntaxException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.List;
+import java.io.InputStream;
 
 //https://stackoverflow.com/questions/19307622/java-says-filenotfoundexception-but-file-exists
 
 /**
+ * Must be in core package! Like "org.top_package_name"
  * Main goals of this class:
  * 1) to use filepaths only with '/' delimeter
  * 2) to make work tha same relative filepaths under *org.main_package* like "icons/..." everywhere
