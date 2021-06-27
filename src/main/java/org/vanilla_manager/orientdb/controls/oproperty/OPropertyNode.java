@@ -1,4 +1,4 @@
-package org.vanilla_manager.orientdb.oproperty;
+package org.vanilla_manager.orientdb.controls.oproperty;
 
 import com.orientechnologies.orient.core.metadata.schema.OClass;
 import com.orientechnologies.orient.core.metadata.schema.OProperty;

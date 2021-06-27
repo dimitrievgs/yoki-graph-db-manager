@@ -1,4 +1,4 @@
-package org.vanilla_manager.overtex_controls;
+package org.vanilla_manager.orientdb.controls;
 
 import javafx.beans.binding.DoubleBinding;
 import javafx.collections.ObservableList;
@@ -7,9 +7,6 @@ import javafx.scene.Node;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TitledPane;
 import javafx.scene.layout.VBox;
-import org.vanilla_manager.MessageBox;
-
-import java.util.List;
 
 public class ScrollableTitledEntityPane extends VBox {
     private VBox entitiesVBox;
@@ -27,9 +24,6 @@ public class ScrollableTitledEntityPane extends VBox {
         titledPane.setContent(scrollPane);
         titledPane.setCollapsible(false);
         this.getChildren().add(titledPane);
-        //this.setMinHeight(600);
-        //this.setMaxHeight(600);
-        //VBox topVBox = new VBox(titledPane); //titledPane itself just goes to center, not to top, so we use vbox
     }
 
     public VBox getEntitiesVBox() {

@@ -30,9 +30,11 @@ import com.orientechnologies.orient.core.sql.executor.OResult;
 import com.orientechnologies.orient.core.sql.executor.OResultSet;
 import javafx.collections.ObservableList;
 import javafx.scene.control.TreeItem;
-import org.vanilla_manager.MessageBox;
-import org.vanilla_manager.orientdb.oproperty.OPropertyCustomAttribute;
-import org.vanilla_manager.orientdb.oproperty.OPropertyNode;
+import org.vanilla_manager.dialogs.MessageBox;
+import org.vanilla_manager.orientdb.controls.oproperty.OPropertyCustomAttribute;
+import org.vanilla_manager.orientdb.controls.oproperty.OPropertyNode;
+import org.vanilla_manager.orientdb.treetableview.OClassNode;
+import org.vanilla_manager.orientdb.treetableview.OVertexNode;
 
 import java.util.*;
 

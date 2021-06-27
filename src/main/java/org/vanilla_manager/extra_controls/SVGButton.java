@@ -1,10 +1,6 @@
-package org.vanilla_manager.orientdb.extra_controls;
+package org.vanilla_manager.extra_controls;
 
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.Bounds;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -37,9 +33,14 @@ public class SVGButton extends Button {
     private static String svgPathBaseStyle = ";-fx-background-color: transparent;-fx-border-style: none;";
     private static String buttonBaseStyle = "-fx-background-color: transparent;-fx-border-width: 0;";
 
+    //-------------------------------------------------------------------------
+    //------------------------------Constructors-------------------------------
+
     //https://stackoverflow.com/questions/40753613/javafx-button-with-svg
+
     /**
      * For non-switching button.
+     *
      * @param _svgFilePath
      * @param _Width
      * @param _Height
@@ -47,8 +48,8 @@ public class SVGButton extends Button {
      * @param _fillColor
      * @param _hoverFillColor
      */
-    public SVGButton(String _svgFilePath, double _Width, double _Height,
-                     double _borderWidth, String _fillColor, String _hoverFillColor) {
+    public SVGButton(String _svgFilePath, double _Width, double _Height, double _borderWidth,
+                     String _fillColor, String _hoverFillColor) {
         setSwitching(false);
         setValue(false);
         SVGPath svgPath = getSVGPath(_svgFilePath);
@@ -56,24 +57,22 @@ public class SVGButton extends Button {
         setFillColorOff(_fillColor);
         setHoverFillColor(_hoverFillColor);
 
-        Bounds bounds = svgPath.getBoundsInLocal();
-        double s1 = (_Width - 2 * _borderWidth) / bounds.getWidth();
-        double s2 = (_Height - 2 * _borderWidth) / bounds.getHeight();
-        double scaleFactor = Math.min(s1, s2);
-        scalePath(svgPath, scaleFactor);
+        SVGScaleAndDimensions sd = getScaleAndDimensions(svgPath, _Width, _Height, _borderWidth, ScaleOn.Both);
+        scalePath(svgPath, sd.scaleFactor);
 
-        create(svgPath, _Width, _Height, _hoverFillColor);
+        create(svgPath, sd.Width, sd.Height, _hoverFillColor);
     }
 
     /**
      * For non-switching button.
+     *
      * @param _svgFilePath
-     * @param _Height
+     * @param linearDimension
      * @param _fillColor
      * @param _hoverFillColor
      */
-    public SVGButton(String _svgFilePath, double _Height, String _fillColor,
-                     String _hoverFillColor) {
+    public SVGButton(String _svgFilePath, double linearDimension, ScaleOn scaleOn,
+                     String _fillColor, String _hoverFillColor) {
         setSwitching(false);
         setValue(false);
         SVGPath svgPath = getSVGPath(_svgFilePath);
@@ -81,31 +80,29 @@ public class SVGButton extends Button {
         setFillColorOff(_fillColor);
         setHoverFillColor(_hoverFillColor);
 
-        Bounds bounds = svgPath.getBoundsInLocal();
-        double s2 = _Height / bounds.getHeight();
-        double Width = s2 * bounds.getWidth();
-        double scaleFactor = s2; //Math.min(s1, s2);
-        scalePath(svgPath, scaleFactor);
+        SVGScaleAndDimensions sd = getScaleAndDimensions(svgPath, linearDimension, 0, scaleOn);
+        scalePath(svgPath, sd.scaleFactor);
 
-        create(svgPath, Width, _Height, _hoverFillColor);
+        create(svgPath, sd.Width, sd.Height, _hoverFillColor);
     }
 
     /**
      * For switching button.
+     *
      * @param svgFilePathOff
-     * @param Height
+     * @param linearDimension
      * @param _fillColorOff
      * @param _fillColorOn
      * @param _hoverFillColor
      */
-    public SVGButton(String svgFilePathOff, double Height,
-                     String _fillColorOff, String _fillColorOn, String _hoverFillColor, boolean rotateForOnSVGPath) {
+    public SVGButton(String svgFilePathOff, double linearDimension, ScaleOn scaleOn,
+                     String _fillColorOff, String _fillColorOn, String _hoverFillColor,
+                     boolean rotateForOnSVGPath) {
         setSwitching(true);
         setValue(false);
         SVGPath svgPathOff = getSVGPath(svgFilePathOff);
         SVGPath svgPathOn = getSVGPath(svgFilePathOff); //must be some clone() here!
-        if (rotateForOnSVGPath)
-        {
+        if (rotateForOnSVGPath) {
             svgPathOn.setRotate(180);
         }
         setSvgPathOff(svgPathOff);
@@ -114,30 +111,30 @@ public class SVGButton extends Button {
         setFillColorOn(_fillColorOn);
         setHoverFillColor(_hoverFillColor);
 
-        double maxWidth = 0;
-        for (SVGPath svgPath : new SVGPath[] {svgPathOff, svgPathOn}) {
-            Bounds bounds = svgPath.getBoundsInLocal();
-            double s2 = Height / bounds.getHeight();
-            double Width = s2 * bounds.getWidth();
-            maxWidth = Math.max(maxWidth, Width); //???
-            double scaleFactor = s2; //Math.min(s1, s2);
-            scalePath(svgPath, scaleFactor);
+        double maxWidth = 0, maxHeight = 0;
+        SVGScaleAndDimensions sd = new SVGScaleAndDimensions();
+        for (SVGPath svgPath : new SVGPath[]{svgPathOff, svgPathOn}) {
+            sd = getScaleAndDimensions(svgPath, linearDimension, 0, scaleOn);
+            maxWidth = Math.max(maxWidth, sd.Width);
+            maxHeight = Math.max(maxHeight, sd.Height);
+            scalePath(svgPath, sd.scaleFactor);
         }
 
-        create(svgPathOff, maxWidth, Height, hoverFillColor);
+        create(svgPathOff, maxWidth, maxHeight, hoverFillColor);
         addClickEvent();
     }
 
     /**
      * For switching button.
+     *
      * @param svgFilePathOff
      * @param svgFilePathOn
-     * @param Height
+     * @param linearDimension
      * @param _fillColorOff
      * @param _fillColorOn
      * @param _hoverFillColor
      */
-    public SVGButton(String svgFilePathOff, String svgFilePathOn, double Height,
+    public SVGButton(String svgFilePathOff, String svgFilePathOn, double linearDimension, ScaleOn scaleOn,
                      String _fillColorOff, String _fillColorOn, String _hoverFillColor) {
         setSwitching(true);
         setValue(false);
@@ -147,22 +144,78 @@ public class SVGButton extends Button {
         setFillColorOn(_fillColorOn);
         setHoverFillColor(_hoverFillColor);
 
-        double maxWidth = 0;
-        for (SVGPath svgPath : new SVGPath[] {svgPathOff, svgPathOn}) {
-            Bounds bounds = svgPath.getBoundsInLocal();
-            double s2 = Height / bounds.getHeight();
-            double Width = s2 * bounds.getWidth();
-            maxWidth = Math.max(maxWidth, Width); //???
-            double scaleFactor = s2; //Math.min(s1, s2);
-            scalePath(svgPath, scaleFactor);
+        double maxWidth = 0, maxHeight = 0;
+        SVGScaleAndDimensions sd = new SVGScaleAndDimensions();
+        for (SVGPath svgPath : new SVGPath[]{svgPathOff, svgPathOn}) {
+            sd = getScaleAndDimensions(svgPath, linearDimension, 0, scaleOn);
+            maxWidth = Math.max(maxWidth, sd.Width);
+            maxHeight = Math.max(maxHeight, sd.Height);
+            scalePath(svgPath, sd.scaleFactor);
         }
 
-        create(svgPathOff, maxWidth, Height, hoverFillColor);
+        create(svgPathOff, maxWidth, maxHeight, hoverFillColor);
         addClickEvent();
     }
 
-    private void create(SVGPath svgPath, double Width, double Height, String hoverFillColor)
-    {
+    //-------------------------------------------------------------------------
+    //---------------------------Scale and Dimensions--------------------------
+
+    private SVGScaleAndDimensions getScaleAndDimensions(SVGPath svgPath, double linearDimension, double borderWidth, ScaleOn scaleOn) {
+        double width = 0;
+        double height = 0;
+        if (scaleOn == ScaleOn.Height)
+            height = linearDimension;
+        else width = linearDimension;
+        return getScaleAndDimensions(svgPath, width, height, borderWidth, scaleOn);
+    }
+
+    private SVGScaleAndDimensions getScaleAndDimensions(SVGPath svgPath, double width, double height, double borderWidth, ScaleOn scaleOn) {
+        double s1, s2, scaleFactor = 0;
+        Bounds bounds = svgPath.getBoundsInLocal();
+        switch (scaleOn) {
+            case Both: //+
+                s1 = (width - 2 * borderWidth) / bounds.getWidth();
+                s2 = (height - 2 * borderWidth) / bounds.getHeight();
+                scaleFactor = Math.min(s1, s2);
+                break;
+            case Width:
+                s1 = (width - 2 * borderWidth) / bounds.getWidth();
+                height = s1 * bounds.getHeight() + 2 * borderWidth;
+                scaleFactor = s1;
+                break;
+            case Height: //+
+                s2 = (height - 2 * borderWidth) / bounds.getHeight();
+                width = s2 * bounds.getWidth() + 2 * borderWidth;
+                scaleFactor = s2;
+                break;
+            default:
+                break;
+        }
+        return new SVGScaleAndDimensions(width, height, scaleFactor);
+    }
+
+    public enum ScaleOn {
+        Both,
+        Width,
+        Height
+    }
+
+    private class SVGScaleAndDimensions {
+        public double Width, Height, scaleFactor;
+
+        public SVGScaleAndDimensions(double _Width, double _Height, double _scaleFactor) {
+            Width = _Width;
+            Height = _Height;
+            scaleFactor = _scaleFactor;
+        }
+        public SVGScaleAndDimensions()
+        {}
+    }
+
+    //-------------------------------------------------------------------------
+    //---------------------------------Create----------------------------------
+
+    private void create(SVGPath svgPath, double Width, double Height, String hoverFillColor) {
         this.setPickOnBounds(true); // make sure transparent parts of the button register clicks too
         applySVGPath(getSvgPath(), getFillColor());
         this.setGraphic(svgPath);
@@ -187,8 +240,7 @@ public class SVGButton extends Button {
         });
     }
 
-    private void addClickEvent()
-    {
+    private void addClickEvent() {
         this.addEventFilter(MouseEvent.MOUSE_CLICKED, (MouseEvent event) -> {
             if (event.getButton() == MouseButton.PRIMARY) {
                 setValue(!getValue());
@@ -198,26 +250,23 @@ public class SVGButton extends Button {
         });
     }
 
-    private void applySVGPath(SVGPath svgPath, String fillColor)
-    {
+    private void applySVGPath(SVGPath svgPath, String fillColor) {
         svgPath.setStyle("-fx-fill:" + fillColor + ";" + svgPathBaseStyle);
         setGraphic(svgPath);
     }
 
-    private SVGPath getSvgPath()
-    {
+    private SVGPath getSvgPath() {
         return getValue() ? getSvgPathOn() : getSvgPathOff();
     }
 
-    private String getFillColor()
-    {
+    private String getFillColor() {
         return getValue() ? getFillColorOn() : getFillColorOff();
     }
 
-    /*********svg************/
+    //-------------------------------------------------------------------------
+    //-----------------------------------SVG-----------------------------------
 
-    private SVGPath getSVGPath(String svgFilePath)
-    {
+    private SVGPath getSVGPath(String svgFilePath) {
         String dValue = getDValueFromSVG(svgFilePath);
         SVGPath path = new SVGPath();
         path.setContent(dValue);
@@ -226,8 +275,7 @@ public class SVGButton extends Button {
         return path;
     }
 
-    private void scalePath(SVGPath path, double scaleFactor)
-    {
+    private void scalePath(SVGPath path, double scaleFactor) {
         path.setScaleX(scaleFactor);
         path.setScaleY(scaleFactor);
     }
@@ -260,7 +308,8 @@ public class SVGButton extends Button {
         return dValue;
     }
 
-    /*******properties*******/
+    //-------------------------------------------------------------------------
+    //-------------------------------Properties--------------------------------
 
     public SVGPath getSvgPathOff() {
         return svgPathOff;

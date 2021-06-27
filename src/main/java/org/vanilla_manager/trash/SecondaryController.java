@@ -1,16 +1,9 @@
-package org.vanilla_manager;
+package org.vanilla_manager.trash;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
-
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
+import java.io.IOException;
+import java.util.Random;
 
 public class SecondaryController {
     @FXML private Label label1;
@@ -18,7 +11,7 @@ public class SecondaryController {
 
     @FXML
     private void switchToPrimary() throws IOException {
-        App.setRoot("primary");
+        //App.setRoot("primary");
     }
 
     Random r = new Random();

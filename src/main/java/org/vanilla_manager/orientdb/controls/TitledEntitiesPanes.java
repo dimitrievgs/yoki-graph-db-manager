@@ -1,9 +1,10 @@
-package org.vanilla_manager.overtex_controls;
+package org.vanilla_manager.orientdb.controls;
+
 
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.control.SplitPane;
-import javafx.scene.layout.VBox;
+import org.vanilla_manager.orientdb.controls.odocument.ODocumentVBox;
 
 /**
  * TitledPanesHbox -> TitledPane -> VBox (for OVertices) -> Vbox (for specific OVertex)
@@ -80,7 +81,7 @@ public class TitledEntitiesPanes extends SplitPane { //Hbox
         getActivePane().setCaption(name);
     }
 
-    public ScrollableTitledEntityPane addNewEntityVBox(EntityVBox newEntityVBox, String newEntityName, boolean inNewTitledPane)
+    public ScrollableTitledEntityPane addNewEntityVBox(ODocumentVBox newEntityVBox, String newEntityName, boolean inNewTitledPane)
     {
         ObservableList<javafx.scene.Node> titledPanesChildren = getItems();//getChildren();
         ScrollableTitledEntityPane scrollableTitledEntityPane;

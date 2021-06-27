@@ -1,25 +1,11 @@
-package org.vanilla_manager.overtex_controls;
+package org.vanilla_manager.orientdb.controls.odocument;
 
 import com.orientechnologies.orient.core.record.OVertex;
-
-/*@DefaultProperty(value = "extension")
-public class OProperty_TextArea extends TextArea
-{
-    @FXML
-    private HBox extension;
-
-    public ObservableList<Node> getExtension() {
-        return extension.getChildren();
-    }
-    // ... more component specific code
-}*/
-
-//https://stackoverflow.com/questions/42975041/javafx-extend-button-and-add-properties-through-fxml
 
 /**
  * Vertically aligned Box for OVertex Properties
  */
-public class OVertexVBox extends EntityVBox {
+public class OVertexVBox extends ODocumentVBox {
     private OVertex oVertex;
 
     public OVertex getOVertex() {

@@ -1,4 +1,4 @@
-package org.vanilla_manager.orientdb;
+package org.vanilla_manager.orientdb.treetableview;
 
 import com.orientechnologies.orient.core.metadata.schema.OClass;
 import javafx.beans.property.SimpleStringProperty;

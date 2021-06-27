@@ -1,4 +1,4 @@
-package org.vanilla_manager.overtex_controls;
+package org.vanilla_manager.orientdb.controls.oproperty;
 
 import com.orientechnologies.orient.core.metadata.schema.OProperty;
 import javafx.scene.control.TextArea;

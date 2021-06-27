@@ -5,6 +5,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
+import org.vanilla_manager.dialogs.MessageBox;
 import org.vanilla_manager.orientdb.OrientdbJavafx;
 
 import java.io.IOException;

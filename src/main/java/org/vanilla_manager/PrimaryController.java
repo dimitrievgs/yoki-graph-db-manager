@@ -1,7 +1,5 @@
 package org.vanilla_manager;
 
-import java.io.IOException;
-
 import javafx.beans.binding.DoubleBinding;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -14,31 +12,30 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.*;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-
-import javafx.scene.web.HTMLEditor;
 import javafx.stage.WindowEvent;
-import org.vanilla_manager.orientdb.*;
-import org.vanilla_manager.orientdb.extra_controls.SVGButton;
-import org.vanilla_manager.orientdb.oproperty.OPropertyNode;
-import org.vanilla_manager.overtex_controls.TitledEntitiesPanes;
+import org.vanilla_manager.extra_controls.SVGButton;
+import org.vanilla_manager.general.Style;
+import org.vanilla_manager.orientdb.OrientdbJavafx;
+import org.vanilla_manager.orientdb.controls.TitledEntitiesPanes;
+import org.vanilla_manager.orientdb.controls.oproperty.OPropertyNode;
+
+import java.io.IOException;
 
 public class PrimaryController {
     public HBox T1_RecordName_parent;
     public Button T1_bLoadDB;
     public TextField T2_RecordName;
     public HBox T2_RecordName_parent;
-    //public TextField T2_OClass_Name_TextField;
     public TableView<OPropertyNode> oPropertiesTable;
     public Tab r2;
     public VBox leftVBox;
     public VBox OClassesTabVBox;
     public VBox rightVBox;
     public ToolBar toolbarBottom;
-    //public TextArea T2_OClass_Description_TextField;
-    //public ComboBox T2_New_Property_DataType_Combobox;
-    //public TextField T2_New_PropertyName_TextField;
     @FXML
     private TabPane controlTabPane;
     @FXML
@@ -52,31 +49,13 @@ public class PrimaryController {
     @FXML
     private MenuBar menubar1;
     @FXML
-    private Button T1_button1;
-    @FXML
-    private Button T1_bAddRecord;
-    @FXML
     private ToggleButton T1_bLoad_DB_Toggle;
     @FXML
-    private Button T1_bSetTextToRecord;
-    @FXML
-    private Button T1_bReadTextFromRecord;
-    @FXML
-    private Button T1_bDeleteRecord;
-    @FXML
-    private Button T1_bDuplicateRecord;
-    @FXML
     private TextField T1_RecordName;
-    @FXML
-    private HTMLEditor T1_htmleditor1;
     @FXML
     private TreeTableView oVerticesTree;
     @FXML
     private TreeTableView oClassesTree;
-    @FXML
-    private TextField T1_Record_Name_TextField;
-    @FXML
-    private Separator sep01;
 
     Stage stage;
     OrientdbJavafx orientdbJavafx;
@@ -157,14 +136,15 @@ public class PrimaryController {
     private void addLeftVBoxButtons() {
         leftVBox.setPrefWidth(leftVBoxWidth);
         leftVBox.setPadding(new Insets(leftVBoxPTop, leftVBoxPRight, leftVBoxPBottom, leftVBoxPLeft));
+        leftVBox.setSpacing(10);
+        int btnWidth = leftVBoxWidth - leftVBoxPLeft - leftVBoxPRight;
 
-        int btnHeight = leftVBoxWidth - leftVBoxPLeft - leftVBoxPRight;
-
-        String svg = "icons/GUI/expand_collapse_treetableviews.svg";
-        SVGButton expandCollapseTabPane = new SVGButton(svg, btnHeight, "#999999", "#9283d8", "#9283d8", true);
-        expandCollapseTabPane.addEventFilter(MouseEvent.MOUSE_CLICKED, (MouseEvent event) -> {
+        String expandCollapseSVG = "icons/GUI/expand_collapse_treetableviews.svg";
+        SVGButton btnExpandCollapseTabPane = new SVGButton(expandCollapseSVG, btnWidth, SVGButton.ScaleOn.Width,
+                Style.ColorBtnOff, Style.ColorBtnOn, Style.ColorBtnHover, true);
+        btnExpandCollapseTabPane.addEventFilter(MouseEvent.MOUSE_CLICKED, (MouseEvent event) -> {
             if (event.getButton() == MouseButton.PRIMARY) {
-                if (expandCollapseTabPane.getValue())
+                if (btnExpandCollapseTabPane.getValue())
                 {
                     centerSplitPane.setDividerPositions(0.0);
                 }
@@ -174,7 +154,14 @@ public class PrimaryController {
                 }
             }
         });
-        leftVBox.getChildren().addAll(expandCollapseTabPane);
+
+        String settingsSVG = "icons/GUI/settings.svg";
+        SVGButton btnSettings = new SVGButton(settingsSVG, btnWidth, SVGButton.ScaleOn.Width,
+                Style.ColorBtnOff, Style.ColorBtnHover);
+        btnSettings.addEventFilter(MouseEvent.MOUSE_CLICKED, (MouseEvent event) -> {
+        });
+
+        leftVBox.getChildren().addAll(btnExpandCollapseTabPane, btnSettings);
     }
 
     //int treetableview_width = 300;
