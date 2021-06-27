@@ -20,14 +20,14 @@ import javafx.stage.WindowEvent;
 import org.vanilla_manager.extra_controls.SVGButton;
 import org.vanilla_manager.general.Style;
 import org.vanilla_manager.orientdb.OrientdbJavafx;
-import org.vanilla_manager.orientdb.controls.TitledEntitiesPanes;
+import org.vanilla_manager.orientdb.controls.titledpanes.TitledEntitiesPanes;
 import org.vanilla_manager.orientdb.controls.oproperty.OPropertyNode;
 
 import java.io.IOException;
 
 public class PrimaryController {
     public HBox T1_RecordName_parent;
-    public Button T1_bLoadDB;
+    public Button btnT1LoadDB;
     public TextField T2_RecordName;
     public HBox T2_RecordName_parent;
     public TableView<OPropertyNode> oPropertiesTable;
@@ -49,7 +49,7 @@ public class PrimaryController {
     @FXML
     private MenuBar menubar1;
     @FXML
-    private ToggleButton T1_bLoad_DB_Toggle;
+    private ToggleButton btnT1LoadDBToggle;
     @FXML
     private TextField T1_RecordName;
     @FXML
@@ -245,14 +245,14 @@ public class PrimaryController {
                 Base_name = "Reload";
             else
                 Base_name = "Search";
-            T1_bLoadDB.setText(Base_name);
+            btnT1LoadDB.setText(Base_name);
         });
 
-        T1_bLoad_DB_Toggle.setOnAction(new EventHandler<ActionEvent>() {
+        btnT1LoadDBToggle.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                String Text = (T1_bLoad_DB_Toggle.isSelected()) ? "Tree" : "Plain (all)";
-                T1_bLoad_DB_Toggle.setText(Text);
+                String Text = (btnT1LoadDBToggle.isSelected()) ? "Tree" : "Plain (all)";
+                btnT1LoadDBToggle.setText(Text);
                 //event.consume();
             }
         });
@@ -279,16 +279,16 @@ public class PrimaryController {
     );
 
     private boolean is_Tree_DB() {
-        return T1_bLoad_DB_Toggle.isSelected();
+        return btnT1LoadDBToggle.isSelected();
     }
 
-    public void T1_LoadDB(ActionEvent actionEvent) {
+    public void T1LoadDB(ActionEvent actionEvent) {
         if (is_Tree_DB())
             orientdbJavafx.loadAndShowOVerticesChildsTree(oVerticesTree, T1_RecordName.getText());
         else orientdbJavafx.loadAndShowOVerticesList(oVerticesTree, T1_RecordName.getText());
     }
 
-    public void T2_LoadDB(ActionEvent actionEvent) {
+    public void T2ReadDB(ActionEvent actionEvent) {
         orientdbJavafx.loadAndShowOClassesTree(oClassesTree, true, true);
     }
 
@@ -296,46 +296,46 @@ public class PrimaryController {
     //----------------------------Graph DB - OVertex---------------------------
 
     @FXML
-    private void T1_Add_OVertex() throws IOException {
+    private void T1AddOVertex() throws IOException {
         orientdbJavafx.addOVertex(oVerticesTree, oPropertiesTable, T1_RecordName, T1_RecordName.getText(), is_Tree_DB());
     }
 
-    public void T1_Duplicate_OVertex(ActionEvent actionEvent) {
+    public void T1DuplicateRecord(ActionEvent actionEvent) {
         orientdbJavafx.duplicateOVertex(oVerticesTree);
     }
 
-    public void T1_Delete_OVertex(ActionEvent actionEvent) {
+    public void T1DeleteOVertex(ActionEvent actionEvent) {
         orientdbJavafx.deleteOVertex(oVerticesTree);
     }
 
-    public void T1_Write_Properties_Data_To_OVertex(ActionEvent actionEvent) {
+    public void T1SaveOPropertiesToOVertices(ActionEvent actionEvent) {
         orientdbJavafx.saveOPropertiesDataToOVertex(oVerticesTree, titledEntitiesPanes);
     }
 
-    public void T1_Read_Properties_Data_From_OVertex(ActionEvent actionEvent) {
+    public void T1ReadOPropertiesFromOVertices(ActionEvent actionEvent) {
         orientdbJavafx.readOPropertiesDataFromOVertex(oVerticesTree, titledEntitiesPanes, false);
     }
 
     //-------------------------------------------------------------------------
     //----------------------------Graph DB - OClass----------------------------
 
-    public void T2_Write_Properties_To_Class(ActionEvent actionEvent) {
+    public void T2SaveOPropertiesToOClass(ActionEvent actionEvent) {
         //orientdbJavafx.writePropertiesToOClass(oClassesTree, titledPanesHbox);
     }
 
-    public void T2_Read_Properties_From_Class(ActionEvent actionEvent) {
+    public void T2ReadOPropertiesFromOClass(ActionEvent actionEvent) {
         orientdbJavafx.readPropertiesFromOClass(oClassesTree, titledEntitiesPanes, false);
     }
 
-    public void T2_Add_OClass(ActionEvent actionEvent) {
+    public void T2AddOClass(ActionEvent actionEvent) {
         orientdbJavafx.addOClass(oClassesTree, T2_RecordName);
     }
 
-    public void T2_Duplicate_OClass(ActionEvent actionEvent) {
+    public void T2DuplicateOClass(ActionEvent actionEvent) {
         orientdbJavafx.duplicateOClass(oClassesTree);
     }
 
-    public void T2_Delete_OClass(ActionEvent actionEvent) {
+    public void T2DeleteOClass(ActionEvent actionEvent) {
         orientdbJavafx.deleteOClass(oClassesTree);
     }
 

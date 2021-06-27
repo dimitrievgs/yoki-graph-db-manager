@@ -22,4 +22,6 @@ module org.vanilla_manager {
     opens org.vanilla_manager.trash to javafx.fxml;
     exports org.vanilla_manager.dialogs;
     opens org.vanilla_manager.dialogs to javafx.fxml;
+    exports org.vanilla_manager.orientdb.controls.titledpanes;
+    opens org.vanilla_manager.orientdb.controls.titledpanes to javafx.fxml;
 }

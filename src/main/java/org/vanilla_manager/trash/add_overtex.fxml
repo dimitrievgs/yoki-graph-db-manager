@@ -43,7 +43,7 @@
                         <TextField/>
                     </HBox>
                     <HBox spacing="10">
-                        <Button text="Reload" onAction="#T1_LoadDB" minWidth="80"/>
+                        <Button text="Reload" onAction="#T1LoadDB" minWidth="80"/>
                     </HBox>
                     <TreeTableView prefWidth="200.0"></TreeTableView>
                 </children>

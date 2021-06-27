@@ -488,7 +488,8 @@ public class OrientdbTalker {
         return null;
     }
 
-    public ObservableList<OPropertyNode> writeOClassOProperties(OClass oClass, String new_Name, String new_Description, ObservableList<OPropertyNode> table_data) {
+    public ObservableList<OPropertyNode> writeOClassOProperties(OClass oClass, String new_Name, String new_Description,
+                                                                ObservableList<OPropertyNode> table_data) {
         try (ODatabaseSession db = openDB();) {
             //OElement el = fetch_Record(db, RID);
             if (oClass != null) {

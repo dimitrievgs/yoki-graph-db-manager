@@ -281,8 +281,7 @@ public class SVGButton extends Button {
     }
 
     /**
-     * It has to work with Inkscape files (this needs to check)
-     *
+     * It eats only vectorized (in Inkscape) raster! (it looks like) With only one d-tag
      * @param svgFilePath
      * @return
      */

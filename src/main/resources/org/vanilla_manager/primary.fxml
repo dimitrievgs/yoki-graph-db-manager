@@ -15,7 +15,7 @@
 <?import javafx.scene.control.ToggleButton?>
 <?import javafx.scene.layout.BorderPane?>
 
-<?import org.vanilla_manager.orientdb.controls.TitledEntitiesPanes?>
+<?import org.vanilla_manager.orientdb.controls.titledpanes.TitledEntitiesPanes?>
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0"
             prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="org.vanilla_manager.PrimaryController">
@@ -40,25 +40,25 @@
                                         <TextField fx:id="T1_RecordName"/>
                                     </HBox>
                                     <HBox spacing="10">
-                                        <ToggleButton fx:id="T1_bLoad_DB_Toggle" text="Plain (all)"
+                                        <ToggleButton fx:id="btnT1LoadDBToggle" text="Plain (all)"
                                                       minWidth="80"/>
-                                        <Button fx:id="T1_bLoadDB" text="Reload" onAction="#T1_LoadDB" minWidth="80"/>
-                                        <Button fx:id="T1_bReadTextFromRecord" text="Read"
-                                                onAction="#T1_Read_Properties_Data_From_OVertex" minWidth="80"/>
-                                        <Button fx:id="T1_bSetTextToRecord" text="Write"
-                                                onAction="#T1_Write_Properties_Data_To_OVertex"
+                                        <Button fx:id="btnT1LoadDB" text="Reload" onAction="#T1LoadDB" minWidth="80"/>
+                                        <Button fx:id="btnT1ReadOPropertiesFromOVertices" text="Read"
+                                                onAction="#T1ReadOPropertiesFromOVertices" minWidth="80"/>
+                                        <Button fx:id="btnT1SaveOPropertiesToOVertices" text="Save"
+                                                onAction="#T1SaveOPropertiesToOVertices"
                                                 minWidth="80"/>
                                         <padding>
                                             <Insets bottom="0.0" left="0.0" right="0.0" top="0.0"/>
                                         </padding>
                                     </HBox>
                                     <HBox spacing="10">
-                                        <Button fx:id="T1_bDuplicateRecord" text="Duplicate"
-                                                onAction="#T1_Duplicate_OVertex"
+                                        <Button fx:id="btnT1DuplicateRecord" text="Duplicate"
+                                                onAction="#T1DuplicateRecord"
                                                 minWidth="80"/>
-                                        <Button fx:id="T1_bDeleteRecord" text="Delete" onAction="#T1_Delete_OVertex"
+                                        <Button fx:id="btnT1DeleteOVertex" text="Delete" onAction="#T1DeleteOVertex"
                                                 minWidth="80"/>
-                                        <Button fx:id="T1_bAddRecord" text="Add" onAction="#T1_Add_OVertex"
+                                        <Button fx:id="btnT1AddOVertex" text="Add" onAction="#T1AddOVertex"
                                                 minWidth="80"/>
                                         <padding>
                                             <Insets bottom="0.0" left="0.0" right="0.0" top="0.0"/>
@@ -78,23 +78,23 @@
                                         <TextField fx:id="T2_RecordName"/>
                                     </HBox>
                                     <HBox spacing="10">
-                                        <Button fx:id="T2_bReadDB" text="Reload" onAction="#T2_LoadDB" minWidth="80"/>
-                                        <Button fx:id="T2_bReadTextFromRecord" text="Read"
-                                                onAction="#T2_Read_Properties_From_Class" minWidth="80"/>
-                                        <Button fx:id="T2_bSetTextToRecord" text="Write"
-                                                onAction="#T2_Write_Properties_To_Class"
+                                        <Button fx:id="btnT2ReadDB" text="Reload" onAction="#T2ReadDB" minWidth="80"/>
+                                        <Button fx:id="btnT2ReadOPropertiesFromOClass" text="Read"
+                                                onAction="#T2ReadOPropertiesFromOClass" minWidth="80"/>
+                                        <Button fx:id="btnT2SaveOPropertiesToOClass" text="Save"
+                                                onAction="#T2SaveOPropertiesToOClass"
                                                 minWidth="80"/>
                                         <padding>
                                             <Insets bottom="0.0" left="0.0" right="0.0" top="0.0"/>
                                         </padding>
                                     </HBox>
                                     <HBox spacing="10">
-                                        <Button fx:id="T2_bDuplicateRecord" text="Duplicate"
-                                                onAction="#T2_Duplicate_OClass"
+                                        <Button fx:id="btnT2DuplicateOClass" text="Duplicate"
+                                                onAction="#T2DuplicateOClass"
                                                 minWidth="80"/>
-                                        <Button fx:id="T2_bDeleteRecord" text="Delete" onAction="#T2_Delete_OClass"
+                                        <Button fx:id="btnT2DeleteOClass" text="Delete" onAction="#T2DeleteOClass"
                                                 minWidth="80"/>
-                                        <Button fx:id="T2_bAddRecord" text="Add" onAction="#T2_Add_OClass"
+                                        <Button fx:id="btnT2AddOClass" text="Add" onAction="#T2AddOClass"
                                                 minWidth="80"/>
                                         <padding>
                                             <Insets bottom="0.0" left="0.0" right="0.0" top="0.0"/>

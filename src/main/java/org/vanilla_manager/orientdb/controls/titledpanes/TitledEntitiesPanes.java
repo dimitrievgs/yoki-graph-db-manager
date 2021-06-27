@@ -1,23 +1,24 @@
-package org.vanilla_manager.orientdb.controls;
+package org.vanilla_manager.orientdb.controls.titledpanes;
 
 
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.control.SplitPane;
+import org.vanilla_manager.dialogs.MessageBox;
+import org.vanilla_manager.orientdb.controls.JavafxEvent;
 import org.vanilla_manager.orientdb.controls.odocument.ODocumentVBox;
+import org.vanilla_manager.orientdb.controls.titledpanes.ScrollableTitledEntityPane;
 
 /**
  * TitledPanesHbox -> TitledPane -> VBox (for OVertices) -> Vbox (for specific OVertex)
  */
-public class TitledEntitiesPanes extends SplitPane { //Hbox
+public class TitledEntitiesPanes extends SplitPane {
     public int activePaneIndex;
 
     public TitledEntitiesPanes() {
         super();
         activePaneIndex = 0;
         this.setStyle("-fx-padding: 0;");
-        //this.setMinHeight(600);
-        //this.setMaxHeight(600);
     }
 
     public void setActivePaneIndex(int value)
@@ -30,24 +31,9 @@ public class TitledEntitiesPanes extends SplitPane { //Hbox
         return activePaneIndex;
     }
 
-    /**
-     * return commonVBox
-     * @return
-     */
-    /*public VBox getActivePaneVBox()
-    {
-        return (VBox) (((ScrollPane)(getActivePane().getContent())).getContent());
-    }
-
-    private TitledPane getActivePane()
-    {
-        return (TitledPane)(((VBox)this.getItems().get(activePaneIndex)).getChildren().get(0));
-    }*/
-
     public ScrollableTitledEntityPane getActivePane()
     {
         return (ScrollableTitledEntityPane)(this.getItems().get(activePaneIndex));
-        //return (TitledPane)(((VBox)this.getItems().get(activePaneIndex)).getChildren().get(0));
     }
 
     private static int top = 12, right = 12, bottom = 12, left = 12;
@@ -55,25 +41,25 @@ public class TitledEntitiesPanes extends SplitPane { //Hbox
 
     public ScrollableTitledEntityPane addActivePane()
     {
-        //top_vbox -> titledPane -> scrollPane -> entitiesVBoxCollection
-        /*VBox entitiesVBoxCollection = new VBox();
-        ScrollPane scrollPane = new ScrollPane(entitiesVBoxCollection);
-        //increase scrollpane speed: https://stackoverflow.com/questions/56739913/how-to-increase-scrolling-speed-of-scrollpane-javafx
-        TitledPane titledPane = new TitledPane();
-        titledPane.setContent(scrollPane);
-        titledPane.setCollapsible(false);
-        VBox top_vbox = new VBox(titledPane); //titledPane itself just goes to center, not to top, so we use vbox*/
-        //top_vbox.setMinWidth(titledPaneMinWidth);
-
+        ObservableList<Node> titledPanesChildren = this.getItems();
         ScrollableTitledEntityPane stPane = new ScrollableTitledEntityPane();
-        
-        ObservableList<Node> titledPanesChildren = this.getItems(); //getChildren();
+        stPane.addEventHandler(JavafxEvent.JAVAFX_EVENT_TYPE, new TitlesPanesEventHandler() {
+            @Override
+            public void onClosePaneEvent(int param0) {
+                titledPanesChildren.remove(stPane);
+            }
+
+            @Override
+            public void onEvent2(String param0) {
+                //System.out.println("string parameter: "+param0);
+            }
+        });
+
         titledPanesChildren.add(stPane); //titledPane
         setActivePaneIndex(titledPanesChildren.size() - 1);
 
         stPane.setEntitiesVBoxPadding(top, right, bottom, left);
-        //entitiesVBoxCollection.setPadding(new Insets(top, right, bottom, left));
-        return stPane; //entitiesVBoxCollection;
+        return stPane;
     }
 
     public void nameActivePane(String name)
@@ -83,7 +69,7 @@ public class TitledEntitiesPanes extends SplitPane { //Hbox
 
     public ScrollableTitledEntityPane addNewEntityVBox(ODocumentVBox newEntityVBox, String newEntityName, boolean inNewTitledPane)
     {
-        ObservableList<javafx.scene.Node> titledPanesChildren = getItems();//getChildren();
+        ObservableList<javafx.scene.Node> titledPanesChildren = getItems();
         ScrollableTitledEntityPane scrollableTitledEntityPane;
         if (inNewTitledPane == false)
         {
@@ -104,23 +90,7 @@ public class TitledEntitiesPanes extends SplitPane { //Hbox
         scrollableTitledEntityPane.getEntitiesVBoxCollection().clear();
         scrollableTitledEntityPane.getEntitiesVBoxCollection().add(newEntityVBox);
 
-        /*var s1 = scrollableTitledPane.getParent();
-        var s2 = s1.getParent();
-        var s3 = s2.getParent();
-        var s4 = s3.getParent();
-
-
-        newEntityVBox.setTopParentTitledContainer((VBox)(scrollableTitledPane.getParent().getParent().getParent()));*/
         nameActivePane(newEntityName);
         return scrollableTitledEntityPane;
     }
-
-    /*public OClassVBox getOClassVBoxes(OClass oClass)
-    {
-        ObservableList<Node> titledPanesHboxChildren = this.getChildren();
-        for (var t : titledPanesHboxChildren)
-        {
-
-        }
-    }*/
 }

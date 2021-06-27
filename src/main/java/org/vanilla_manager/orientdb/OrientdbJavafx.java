@@ -14,8 +14,8 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.util.Callback;
 import org.vanilla_manager.dialogs.MessageBox;
-import org.vanilla_manager.orientdb.controls.ScrollableTitledEntityPane;
-import org.vanilla_manager.orientdb.controls.TitledEntitiesPanes;
+import org.vanilla_manager.orientdb.controls.titledpanes.ScrollableTitledEntityPane;
+import org.vanilla_manager.orientdb.controls.titledpanes.TitledEntitiesPanes;
 import org.vanilla_manager.orientdb.controls.odocument.OClassVBox;
 import org.vanilla_manager.orientdb.controls.odocument.OVertexVBox;
 import org.vanilla_manager.orientdb.controls.oproperty.OPropertyCustomAttribute;
@@ -414,6 +414,7 @@ public class OrientdbJavafx {
                 //nameField.maxWidthProperty().bind(scrollableTitledEntityPane.entityInnerWidthProperty());
                 oVertexVBoxChildren.addAll(nameLabel, nameField);
 
+                var kk = oVertex.getPropertyNames();
                 Collection<OProperty> Properties = orientdb.getOClassOProperties(oVertex);
                 for (OProperty property : Properties) {
                     String property_name = property.getName();
