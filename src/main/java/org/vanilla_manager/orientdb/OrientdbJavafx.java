@@ -550,5 +550,10 @@ public class OrientdbJavafx {
             ti.getParent().getChildren().remove(ti);
             oClassesTree.getSelectionModel().select(Selected_Index);
         }
+        //http://orientdb.com/docs/2.2.x/Schema.html
+        //database.command(new OCommandSQL("DELETE FROM Account")).execute();
+        //database.getMetadata().getSchema().dropCl ass("Account");
+
+        //Dropping Class Properties
     }
 }

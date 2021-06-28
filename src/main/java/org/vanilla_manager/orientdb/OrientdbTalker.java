@@ -26,6 +26,7 @@ import com.orientechnologies.orient.core.record.ODirection;
 import com.orientechnologies.orient.core.record.OEdge;
 import com.orientechnologies.orient.core.record.OElement;
 import com.orientechnologies.orient.core.record.OVertex;
+import com.orientechnologies.orient.core.sql.OCommandSQL;
 import com.orientechnologies.orient.core.sql.executor.OResult;
 import com.orientechnologies.orient.core.sql.executor.OResultSet;
 import javafx.collections.ObservableList;
@@ -111,8 +112,7 @@ public class OrientdbTalker {
         Root_Vertex = addOVertex(Root_Vertex_Name, Vertex_Class_Name).getOVertex();
     }
 
-    public ODatabaseSession openDB()
-    {
+    public ODatabaseSession openDB() {
         ODatabaseSession db = orientDB.open(db_name, user_name, password);
         return db;
     }
@@ -394,7 +394,7 @@ public class OrientdbTalker {
                 do {
                     new_OClass2_name += OClass_Name_Extra_Char;
                 }
-                while(db.getClass(new_OClass2_name) != null);
+                while (db.getClass(new_OClass2_name) != null);
                 OClass Parent = prototype.getSuperClasses().get(0);
                 OClass oClass2 = db.createClass(new_OClass2_name, Parent.getName());
 
@@ -414,22 +414,20 @@ public class OrientdbTalker {
     public void removeOClass(ODatabaseSession db, OClass oClass) {
         OSchema schema = db.getMetadata().getSchema();
         List<OClass> oClasses = collect_sub_classes_from_bottom_to_top(oClass);
-        for (OClass oClass1 : oClasses)
-        {
+        for (OClass oClass1 : oClasses) {
             schema.dropClass(oClass1.getName());
         }
     }
 
     /**
      * Recursive
+     *
      * @param oClass
      */
-    private List<OClass> collect_sub_classes_from_bottom_to_top(OClass oClass)
-    {
+    private List<OClass> collect_sub_classes_from_bottom_to_top(OClass oClass) {
         List<OClass> oClasses = new ArrayList<>();
         Collection<OClass> sub_OClasses = oClass.getSubclasses();
-        for (OClass sub_oClass : sub_OClasses)
-        {
+        for (OClass sub_oClass : sub_OClasses) {
             oClasses.addAll(collect_sub_classes_from_bottom_to_top(sub_oClass));
         }
         oClasses.add(oClass);
@@ -504,6 +502,7 @@ public class OrientdbTalker {
                     OPropertyNode Property_Node = table_data.get(i);
                     OProperty property = Property_Node.getOProperty();
 
+                    String oldName = property.getName();
                     String newName = Property_Node.getName();
                     String newDescription = Property_Node.getDescription();
                     String newDataType = Property_Node.getDataTypeValue();
@@ -516,16 +515,18 @@ public class OrientdbTalker {
                             OClass Owner_Class = old_property_with_same_name.getOwnerClass();
                             //it means we just want to delete old one and create new one with the same name. For example, to change OType which is impossible to do in other way.
                             if (Owner_Class == oClass) { //otherwise it will not allow to remove from this property
-                                oClass.dropProperty(newName);
+                                //oClass.dropProperty(newName);
+                                dropProperty(db, oClass, newName);
                                 old_properties_list.remove(old_property_with_same_name);
                             }
                         }
                         OType oType = OPropertyCustomAttribute.DataType.getOType(newDataType);
-                        property = oClass.createProperty(newName, oType);
+                        property = createProperty(db, oClass, newName, oType); //oClass.createProperty(newName, oType);
                         Property_Node.setOProperty(property);
                         Property_Node.setOrientdbType(oType.toString());
                     } else {
-                        property.setName(newName);
+                        renameProperty(db, oClass, property, oldName, newName);
+                        //property.setName(newName);
                         old_properties_list.remove(property);
                     }
 
@@ -539,7 +540,10 @@ public class OrientdbTalker {
 
                 for (OProperty property : old_properties_list) {
                     if (property.getOwnerClass() == oClass) //otherwise it will not allow to remove from this property
-                        oClass.dropProperty(property.getName());
+                    {
+                        dropProperty(db, oClass, property.getName());
+                        //oClass.dropProperty(property.getName());
+                    }
                 }
             }
             return table_data;
@@ -548,6 +552,66 @@ public class OrientdbTalker {
         }
         return null;
     }
+
+    private void dropProperty(ODatabaseSession db, OClass oClass, String propertyName) {
+        oClass.dropProperty(propertyName); //delete from oClass, not from records
+        //now let's delete such fields from corresponded to oclass records
+        String commandText = "UPDATE `" + oClass.getName() + "` REMOVE " + propertyName;
+        OResultSet rs = db.command(commandText, "");
+        while (rs.hasNext()) { //not needed?
+            OResult item = rs.next();
+        }
+        rs.close();
+        db.getMetadata().getSchema().reload();
+        //db.begin();
+        //db.commit();
+
+        //The dropped property will not be removed from records unless you explicitly delete them using
+        //the [SQLUpdate SQL UPDATE + REMOVE statement]
+        //https://orientdb.org/docs/2.1.x/Java-Schema-Api.html
+        //Update one or more records in the current database.
+        //Remember: OrientDB can work in schema-less mode, so you can create any field on-the-fly.
+        //Furthermore, the command also supports extensions to work on collections.
+        //https://orientdb.org/docs/3.0.x/sql/SQL-Update.html
+    }
+
+    private OProperty createProperty(ODatabaseSession db, OClass oClass, String propertyName, OType oType) {
+        OProperty property = oClass.createProperty(propertyName, oType);
+        //UPDATE Profile SET nick = 'Luca' WHERE nick IS NULL
+        String commandText = "UPDATE `" + oClass.getName() + "` SET " + propertyName + " = ' ' WHERE nick IS NULL";
+        OResultSet rs = db.command(commandText, "");
+        db.getMetadata().getSchema().reload();
+        //db.begin();
+        //db.commit();
+
+
+        return property;
+    }
+
+    private void renameProperty(ODatabaseSession db, OClass oClass, OProperty property, String oldPropertyName, String newPropertyName) {
+        if (newPropertyName != oldPropertyName) {
+            //property.setName(newPropertyName);
+            //ALTER PROPERTY Account.age NAME "born"
+            //db.begin();
+            String commandText = "ALTER PROPERTY `" + oClass.getName() + "`.`" + oldPropertyName + "` NAME \"" + newPropertyName + "\"";
+            OResultSet rs = db.command(commandText, "");
+            commandText = "UPDATE `" + oClass.getName() + "` REMOVE " + oldPropertyName;
+            rs = db.command(commandText, "");
+            while (rs.hasNext()) { //not needed?
+                OResult item = rs.next();
+            }
+            rs.close();
+            //db.commit();
+            db.getMetadata().getSchema().reload();
+            db.reload();
+            //db.begin();
+
+            //db.close();
+
+        }
+    }
+
+
 
     public Collection<OProperty> readOClassOProperties(OClass oClass) {
         try (ODatabaseSession db = openDB();) {
@@ -662,14 +726,12 @@ public class OrientdbTalker {
     public OClassNode readOClasses(boolean Read_V_OClasses, boolean Read_E_OClasses) {
         try (ODatabaseSession db = openDB();) {
             List<OClassNode> Classes_Nodes = new ArrayList<>();
-            if (Read_V_OClasses)
-            {
+            if (Read_V_OClasses) {
                 OClass V_Class = db.getClass(Vertex_Class_Name);
                 OClassNode V_nodes = getOClassHierarchy(V_Class);
                 Classes_Nodes.add(V_nodes);
             }
-            if (Read_E_OClasses)
-            {
+            if (Read_E_OClasses) {
                 OClass E_Class = db.getClass(Edge_Class_Name);
                 OClassNode E_nodes = getOClassHierarchy(E_Class);
                 Classes_Nodes.add(E_nodes);

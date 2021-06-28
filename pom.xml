@@ -10,7 +10,7 @@
         <maven.compiler.target>11</maven.compiler.target>
         <javafx.version>11</javafx.version>
         <javafx.maven.plugin.version>0.0.4</javafx.maven.plugin.version>
-        <orientdb.version>3.0.37</orientdb.version> <!-- 3.0.37, 3.2.0 выдавало ошибки, вроде, требовало другие зависимости -->
+        <orientdb.version>3.0.38</orientdb.version> <!-- 3.0.37, 3.2.0 выдавало ошибки, вроде, требовало другие зависимости -->
     </properties>
     <dependencies>
         <dependency>
@@ -34,12 +34,6 @@
             <artifactId>orientdb-core</artifactId>
             <version>${orientdb.version}</version>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/com.orientechnologies/orientdb-graphdb -->
-        <!--<dependency>
-            <groupId>com.orientechnologies</groupId>
-            <artifactId>orientdb-graphdb</artifactId>
-            <version>${orientdb.version}</version>
-        </dependency>-->
     </dependencies>
     <build>
         <plugins>
