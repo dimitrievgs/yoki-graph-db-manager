@@ -411,12 +411,11 @@ public class OrientdbJavafx {
                 //nameField.maxWidthProperty().bind(scrollableTitledEntityPane.entityInnerWidthProperty());
                 oVertexVBoxChildren.addAll(nameLabel, nameField);
 
-                var kk = oVertex.getPropertyNames();
-                List<Object> ov_pr = new ArrayList<>();
-                for (String propName : kk) {
+                Set<String> oVertexPropertiesNames = oVertex.getPropertyNames();
+                List<Object> oVertexPropertiesValues = new ArrayList<>();
+                for (String propName : oVertexPropertiesNames) {
                     var p = oVertex.getProperty(propName);
-                    ov_pr.add(p);
-
+                    oVertexPropertiesValues.add(p);
                 }
 
 
@@ -444,10 +443,6 @@ public class OrientdbJavafx {
 
     //-------------------------------------------------------------------------
     //----------------------------------OClass---------------------------------
-
-    /*private void Erase_OClass_Text_Field() {
-        T2_RecordName.setText("");
-    }*/
 
     private final String[] Forbidden_OClass_Names = new String[]{OrientdbTalker.Vertex_Class_Name,
             OrientdbTalker.Edge_Class_Name, OrientdbTalker.Edge_Child_Page_Class};
