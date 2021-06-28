@@ -10,8 +10,8 @@
         <maven.compiler.target>11</maven.compiler.target>
         <javafx.version>11</javafx.version>
         <javafx.maven.plugin.version>0.0.4</javafx.maven.plugin.version>
-        <orientdb.version>3.1.11</orientdb.version> <!-- 3.0.37, 3.2.0 выдавало ошибки, вроде, требовало другие зависимости -->
-        <jnr-ffi.version>2.2.4</jnr-ffi.version> <!-- Needed for orientdb since 3.1.X -->
+        <orientdb.version>3.1.12</orientdb.version> <!-- 3.0.37, 3.2.0 -->
+        <jnr-ffi.version>2.2.4</jnr-ffi.version> <!-- for orientdb, needed since 3.1.X -->
     </properties>
     <dependencies>
         <dependency>
@@ -36,6 +36,7 @@
             <version>${orientdb.version}</version>
         </dependency>
         <!-- https://mvnrepository.com/artifact/com.github.jnr/jnr-ffi -->
+        <!-- for orientdb -->
         <dependency>
             <groupId>com.github.jnr</groupId>
             <artifactId>jnr-ffi</artifactId>
@@ -57,8 +58,32 @@
                 <artifactId>javafx-maven-plugin</artifactId>
                 <version>${javafx.maven.plugin.version}</version>
                 <configuration>
-                    <mainClass>org.vanilla_manager.App</mainClass>
+                    <mainClass>org.yoki_manager.App</mainClass> <!-- org.yoki_manager.JarFXAppLauncher -->
                 </configuration>
+            </plugin>
+            <!-- to compile javafx application into jar -->
+            <!-- https://github.com/AlmasB/JavaFX11-example/blob/master/pom.xml -->
+            <!-- https://stackoverflow.com/questions/52653836/maven-shade-javafx-runtime-components-are-missing -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>3.0.0</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <transformers>
+                                <transformer
+                                        implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                    <mainClass>org.yoki_manager.JarFXAppLauncher</mainClass>
+                                </transformer>
+                            </transformers>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>

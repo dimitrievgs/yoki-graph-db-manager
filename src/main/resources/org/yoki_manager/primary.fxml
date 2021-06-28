@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.Button?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.TreeTableView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.control.ToolBar?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.ToggleButton?>
+<?import javafx.scene.layout.BorderPane?>
+
+<?import org.yoki_manager.orientdb.controls.titledpanes.TitledEntitiesPanes?>
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0"
+            prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="org.yoki_manager.PrimaryController">
+    <left>
+        <VBox fx:id="leftVBox" prefWidth="40.0" BorderPane.alignment="CENTER">
+        </VBox>
+    </left>
+    <right>
+        <VBox fx:id="rightVBox" prefWidth="40.0" BorderPane.alignment="CENTER"/>
+    </right>
+    <center>
+        <Pane fx:id="centerPane" BorderPane.alignment="CENTER" >
+            <!--xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="org.yoki_manager.PrimaryController"-->
+            <children>
+                <SplitPane fx:id="centerSplitPane" dividerPositions="0.25">
+                    <TabPane fx:id="controlTabPane">
+                        <Tab fx:id="r2" text="Manage Records">
+                            <VBox fx:id="OVertexTabVBox" spacing="10">
+                                <children>
+                                    <HBox fx:id="T1_RecordName_parent">
+                                        <TextField fx:id="T1_RecordName"/>
+                                    </HBox>
+                                    <HBox spacing="10">
+                                        <ToggleButton fx:id="btnT1LoadDBToggle" text="Plain (all)"
+                                                      minWidth="80"/>
+                                        <Button fx:id="btnT1LoadDB" text="Reload" onAction="#T1LoadDB" minWidth="80"/>
+                                        <Button fx:id="btnT1ReadOPropertiesFromOVertices" text="Read"
+                                                onAction="#T1ReadOPropertiesFromOVertices" minWidth="80"/>
+                                        <Button fx:id="btnT1SaveOPropertiesToOVertices" text="Save"
+                                                onAction="#T1SaveOPropertiesToOVertices"
+                                                minWidth="80"/>
+                                        <padding>
+                                            <Insets bottom="0.0" left="0.0" right="0.0" top="0.0"/>
+                                        </padding>
+                                    </HBox>
+                                    <HBox spacing="10">
+                                        <Button fx:id="btnT1DuplicateRecord" text="Duplicate"
+                                                onAction="#T1DuplicateRecord"
+                                                minWidth="80"/>
+                                        <Button fx:id="btnT1DeleteOVertex" text="Delete" onAction="#T1DeleteOVertex"
+                                                minWidth="80"/>
+                                        <Button fx:id="btnT1AddOVertex" text="Add" onAction="#T1AddOVertex"
+                                                minWidth="80"/>
+                                        <padding>
+                                            <Insets bottom="0.0" left="0.0" right="0.0" top="0.0"/>
+                                        </padding>
+                                    </HBox>
+                                    <TreeTableView fx:id="oVerticesTree" prefWidth="200.0"></TreeTableView>
+                                </children>
+                                <padding>
+                                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+                                </padding>
+                            </VBox>
+                        </Tab>
+                        <Tab text="Manage Classes">
+                            <VBox fx:id="OClassesTabVBox" spacing="10">
+                                <children>
+                                    <HBox fx:id="T2_RecordName_parent">
+                                        <TextField fx:id="T2_RecordName"/>
+                                    </HBox>
+                                    <HBox spacing="10">
+                                        <Button fx:id="btnT2ReadDB" text="Reload" onAction="#T2ReadDB" minWidth="80"/>
+                                        <Button fx:id="btnT2ReadOPropertiesFromOClass" text="Read"
+                                                onAction="#T2ReadOPropertiesFromOClass" minWidth="80"/>
+                                        <Button fx:id="btnT2SaveOPropertiesToOClass" text="Save"
+                                                onAction="#T2SaveOPropertiesToOClass"
+                                                minWidth="80"/>
+                                        <padding>
+                                            <Insets bottom="0.0" left="0.0" right="0.0" top="0.0"/>
+                                        </padding>
+                                    </HBox>
+                                    <HBox spacing="10">
+                                        <Button fx:id="btnT2DuplicateOClass" text="Duplicate"
+                                                onAction="#T2DuplicateOClass"
+                                                minWidth="80"/>
+                                        <Button fx:id="btnT2DeleteOClass" text="Delete" onAction="#T2DeleteOClass"
+                                                minWidth="80"/>
+                                        <Button fx:id="btnT2AddOClass" text="Add" onAction="#T2AddOClass"
+                                                minWidth="80"/>
+                                        <padding>
+                                            <Insets bottom="0.0" left="0.0" right="0.0" top="0.0"/>
+                                        </padding>
+                                    </HBox>
+                                    <TreeTableView fx:id="oClassesTree" prefWidth="200.0"></TreeTableView>
+                                </children>
+                                <padding>
+                                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+                                </padding>
+                            </VBox>
+                        </Tab>
+                    </TabPane>
+                    <TitledEntitiesPanes fx:id="titledEntitiesPanes" >
+                        <items>
+                        </items>
+                        <padding>
+                            <Insets bottom="0.0" left="0.0" right="0.0" top="0.0"/>
+                        </padding>
+                    </TitledEntitiesPanes>
+                </SplitPane>
+            </children>
+            <padding>
+                <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>
+            </padding>
+        </Pane>
+    </center>
+    <top>
+        <!--<HBox prefHeight="100.0" prefWidth="200.0" BorderPane.alignment="CENTER"/>-->
+        <MenuBar fx:id="menubar1" BorderPane.alignment="CENTER"/>
+    </top>
+    <bottom>
+        <!--<HBox prefHeight="100.0" prefWidth="200.0" BorderPane.alignment="CENTER"/>-->
+        <ToolBar fx:id="toolbarBottom" prefHeight="25.0" BorderPane.alignment="CENTER"/>
+    </bottom>
+</BorderPane>

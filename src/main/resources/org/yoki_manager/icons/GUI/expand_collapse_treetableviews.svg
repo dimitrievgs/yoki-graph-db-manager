@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   version="1.1"
+   id="svg872"
+   width="104.32"
+   height="103.36"
+   viewBox="0 0 104.32 103.36"
+   sodipodi:docname="expand_collapse_treetableviews2.svg"
+   inkscape:version="1.0.2 (e86c870879, 2021-01-15, custom)">
+  <metadata
+     id="metadata878">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <defs
+     id="defs876" />
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1920"
+     inkscape:window-height="1137"
+     id="namedview874"
+     showgrid="false"
+     inkscape:zoom="5.0282845"
+     inkscape:cx="25.619393"
+     inkscape:cy="71.143397"
+     inkscape:window-x="-8"
+     inkscape:window-y="32"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="g880" />
+  <g
+     inkscape:groupmode="layer"
+     inkscape:label="Image"
+     id="g880">
+    <path
+       style="fill:#606060;fill-opacity:1;stroke-width:0.32"
+       d="M 49.241125,96.997246 C 47.838578,96.267656 6.2718409,54.700112 5.5397259,53.294999 4.7877719,51.851808 4.7472649,50.159104 5.4318319,48.786359 6.1366479,47.373008 47.034255,6.4289097 48.508376,5.6608457 c 4.350685,-2.266844 8.940938,2.32338 6.674192,6.6741523 -0.340205,0.652989 -9.052214,9.6108 -19.360019,19.906247 L 17.081083,50.96024 36.25037,70.161245 c 10.54311,10.560554 19.39912,19.661853 19.680022,20.225111 0.691258,1.3861 0.642387,3.06332 -0.133574,4.58434 -1.135133,2.22505 -4.295831,3.2021 -6.555693,2.02655 z m 42.88,0 C 90.718578,96.267656 49.151842,54.700112 48.419727,53.294999 47.667771,51.851808 47.627266,50.159104 48.311832,48.786359 49.016648,47.373008 89.914255,6.4289097 91.388376,5.6608457 c 4.350685,-2.266844 8.940934,2.32338 6.674192,6.6741523 -0.340205,0.652989 -9.052214,9.6108 -19.360019,19.906247 L 59.961083,50.96024 79.13037,70.161245 c 10.54311,10.560554 19.39912,19.661853 19.680022,20.225111 0.691258,1.3861 0.642387,3.06332 -0.133574,4.58434 -1.135133,2.22505 -4.295831,3.2021 -6.555693,2.02655 z"
+       id="path1459" />
+    <path
+       style="fill:#000000;stroke-width:0.32"
+       id="path1457"
+       d="" />
+    <path
+       style="fill:#000000;stroke-width:0.32"
+       id="path1455"
+       d="" />
+    <path
+       style="fill:#000000;stroke-width:0.32"
+       id="path1453"
+       d="" />
+    <path
+       style="fill:#000000;stroke-width:0.32"
+       id="path1451"
+       d="" />
+    <path
+       style="fill:#000000;stroke-width:0.32"
+       id="path1449"
+       d="" />
+    <path
+       style="fill:#000000;stroke-width:0.32"
+       id="path1447"
+       d="" />
+  </g>
+</svg>
