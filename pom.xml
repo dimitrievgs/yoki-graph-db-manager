@@ -10,7 +10,8 @@
         <maven.compiler.target>11</maven.compiler.target>
         <javafx.version>11</javafx.version>
         <javafx.maven.plugin.version>0.0.4</javafx.maven.plugin.version>
-        <orientdb.version>3.0.38</orientdb.version> <!-- 3.0.37, 3.2.0 выдавало ошибки, вроде, требовало другие зависимости -->
+        <orientdb.version>3.1.11</orientdb.version> <!-- 3.0.37, 3.2.0 выдавало ошибки, вроде, требовало другие зависимости -->
+        <jnr-ffi.version>2.2.4</jnr-ffi.version> <!-- Needed for orientdb since 3.1.X -->
     </properties>
     <dependencies>
         <dependency>
@@ -33,6 +34,12 @@
             <groupId>com.orientechnologies</groupId>
             <artifactId>orientdb-core</artifactId>
             <version>${orientdb.version}</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/com.github.jnr/jnr-ffi -->
+        <dependency>
+            <groupId>com.github.jnr</groupId>
+            <artifactId>jnr-ffi</artifactId>
+            <version>${jnr-ffi.version}</version>
         </dependency>
     </dependencies>
     <build>

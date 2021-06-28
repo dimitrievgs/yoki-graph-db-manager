@@ -44,6 +44,7 @@ public class OrientdbTalker {
     String db_name = "vanilla_db";
     String user_name = "admin";
     String password = "admin";
+    //Default users are no longer created automatically for databases since 3.2.0. https://github.com/orientechnologies/orientdb/issues/9613
 
     //String OElementClass = "OElement"; //иначе надо обращаться
     public static String Vertex_Class_Name = "V";
@@ -502,7 +503,9 @@ public class OrientdbTalker {
                     OPropertyNode Property_Node = table_data.get(i);
                     OProperty property = Property_Node.getOProperty();
 
-                    String oldName = property.getName();
+                    String oldName = "";
+                    if (property != null)
+                        oldName = property.getName();
                     String newName = Property_Node.getName();
                     String newDescription = Property_Node.getDescription();
                     String newDataType = Property_Node.getDataTypeValue();
@@ -556,16 +559,13 @@ public class OrientdbTalker {
     private void dropProperty(ODatabaseSession db, OClass oClass, String propertyName) {
         oClass.dropProperty(propertyName); //delete from oClass, not from records
         //now let's delete such fields from corresponded to oclass records
-        String commandText = "UPDATE `" + oClass.getName() + "` REMOVE " + propertyName;
+        String commandText = "UPDATE `" + oClass.getName() + "` REMOVE `" + propertyName + "`";
         OResultSet rs = db.command(commandText, "");
-        while (rs.hasNext()) { //not needed?
+        while (rs.hasNext()) {
             OResult item = rs.next();
         }
         rs.close();
         db.getMetadata().getSchema().reload();
-        //db.begin();
-        //db.commit();
-
         //The dropped property will not be removed from records unless you explicitly delete them using
         //the [SQLUpdate SQL UPDATE + REMOVE statement]
         //https://orientdb.org/docs/2.1.x/Java-Schema-Api.html
@@ -577,40 +577,39 @@ public class OrientdbTalker {
 
     private OProperty createProperty(ODatabaseSession db, OClass oClass, String propertyName, OType oType) {
         OProperty property = oClass.createProperty(propertyName, oType);
-        //UPDATE Profile SET nick = 'Luca' WHERE nick IS NULL
-        String commandText = "UPDATE `" + oClass.getName() + "` SET " + propertyName + " = ' ' WHERE nick IS NULL";
+        String commandText = "UPDATE `" + oClass.getName() + "` SET `" + propertyName + "` = ' ' WHERE `" + propertyName + "` IS NULL";
         OResultSet rs = db.command(commandText, "");
+        while (rs.hasNext()) {
+            OResult item = rs.next();
+        }
+        rs.close();
         db.getMetadata().getSchema().reload();
-        //db.begin();
-        //db.commit();
-
-
         return property;
     }
 
     private void renameProperty(ODatabaseSession db, OClass oClass, OProperty property, String oldPropertyName, String newPropertyName) {
         if (newPropertyName != oldPropertyName) {
-            //property.setName(newPropertyName);
+            if (oldPropertyName == "") {
+                property.setName(newPropertyName);
+            }
             //ALTER PROPERTY Account.age NAME "born"
-            //db.begin();
-            String commandText = "ALTER PROPERTY `" + oClass.getName() + "`.`" + oldPropertyName + "` NAME \"" + newPropertyName + "\"";
+            String commandText = "ALTER PROPERTY `" + oClass.getName() + "`.`" + oldPropertyName + "` NAME `" + newPropertyName + "`";
             OResultSet rs = db.command(commandText, "");
-            commandText = "UPDATE `" + oClass.getName() + "` REMOVE " + oldPropertyName;
-            rs = db.command(commandText, "");
-            while (rs.hasNext()) { //not needed?
+            while (rs.hasNext()) {
                 OResult item = rs.next();
             }
             rs.close();
-            //db.commit();
+            commandText = "UPDATE `" + oClass.getName() + "` REMOVE `" + oldPropertyName + "`";
+            rs = db.command(commandText, "");
+            while (rs.hasNext()) {
+                OResult item = rs.next();
+            }
+            rs.close();
             db.getMetadata().getSchema().reload();
             db.reload();
-            //db.begin();
-
-            //db.close();
 
         }
     }
-
 
 
     public Collection<OProperty> readOClassOProperties(OClass oClass) {
