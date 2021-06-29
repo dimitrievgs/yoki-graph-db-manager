@@ -49,7 +49,7 @@ public class App extends Application {
 
     @Override
     public void stop(){
-        orientdbJavafx.closeDB();
+        orientdbJavafx.closeDB(); //otherwise since orientdb 3.1.X it's not closing, needs to check out why
         System.out.println("Stage is closing");
     }
 
