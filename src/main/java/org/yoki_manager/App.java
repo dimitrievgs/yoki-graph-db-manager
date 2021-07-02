@@ -1,12 +1,11 @@
-package org.yoki_manager;
+package org.vanilla_manager;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
-import org.yoki_manager.dialogs.MessageBox;
-import org.yoki_manager.orientdb.OrientdbJavafx;
+import org.vanilla_manager.orientdb.OrientdbJavafx;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -45,12 +44,6 @@ public class App extends Application {
         controller.postInitialize(primaryStage, orientdbJavafx);
 
         primaryStage.show();
-    }
-
-    @Override
-    public void stop(){
-        orientdbJavafx.closeDB();
-        System.out.println("Stage is closing");
     }
 
     private static FXMLLoader GetLoader(String fxml) throws IOException {
