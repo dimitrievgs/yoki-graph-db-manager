@@ -376,7 +376,7 @@ public class OrientdbJavafx {
                                 OProperty node_property = op_textarea.getOProperty();
                                 String node_property_name = node_property.getName();
                                 if (oClass.existsProperty(node_property_name)) {
-                                    String s = op_textarea.getText();
+                                    String s = op_textarea.getHtmlText();
                                     oVertex.setProperty(node_property_name, s);
                                 }
                             }
@@ -434,7 +434,8 @@ public class OrientdbJavafx {
                         label.setText(property_name);
                         String s_value = (String) value;
                         OPropertyTextArea TA = new OPropertyTextArea(property);
-                        TA.setText(s_value);
+                        TA.setHtmlText(s_value);
+                        TA.setMaxHeight(300);
                         //TA.minWidthProperty().bind(scrollableTitledEntityPane.entityInnerWidthProperty());
                         //TA.maxWidthProperty().bind(scrollableTitledEntityPane.entityInnerWidthProperty());
                         oVertexVBoxChildren.addAll(label, TA);
