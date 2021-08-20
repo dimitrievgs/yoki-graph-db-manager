@@ -30,6 +30,8 @@ import com.orientechnologies.orient.core.sql.executor.OResult;
 import com.orientechnologies.orient.core.sql.executor.OResultSet;
 import javafx.collections.ObservableList;
 import javafx.scene.control.TreeItem;
+
+import org.yoki_manager.ResourcesManager;
 import org.yoki_manager.dialogs.MessageBox;
 import org.yoki_manager.orientdb.controls.oproperty.OPropertyCustomAttribute;
 import org.yoki_manager.orientdb.controls.oproperty.OPropertyNode;
@@ -39,7 +41,7 @@ import org.yoki_manager.orientdb.treetableview.OVertexNode;
 import java.util.*;
 
 public class OrientdbTalker {
-    String orientdb_path = "embedded:D:/orient_dbs/"; //"embedded:/tmp/"
+    String orientdb_path = "embedded:D:/orient_dbs/"; //"embedded:" + ResourcesManager.getAppPath() + "\\orient_dbs\\"; //"embedded:D:/orient_dbs/"; //"embedded:/tmp/"
     String db_name = "example_db";
     String user_name = "admin";
     String password = "admin";
@@ -603,6 +605,15 @@ public class OrientdbTalker {
                 OResult item = rs.next();
             }
             rs.close();
+
+            commandText = "UPDATE `" + oClass.getName() + "` SET `" + newPropertyName + "` = `" + oldPropertyName + "`";
+            rs = db.command(commandText, "");
+            while (rs.hasNext()) {
+                OResult item = rs.next();
+            }
+            rs.close();
+            db.getMetadata().getSchema().reload();
+
             commandText = "UPDATE `" + oClass.getName() + "` REMOVE `" + oldPropertyName + "`";
             rs = db.command(commandText, "");
             while (rs.hasNext()) {
@@ -610,8 +621,7 @@ public class OrientdbTalker {
             }
             rs.close();
             db.getMetadata().getSchema().reload();
-            db.reload();
-
+            //db.reload();
         }
     }
 

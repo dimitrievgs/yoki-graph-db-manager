@@ -320,6 +320,7 @@ public class PrimaryController {
     //----------------------------Graph DB - OClass----------------------------
 
     public void T2SaveOPropertiesToOClass(ActionEvent actionEvent) {
+        int t = 1;
         //orientdbJavafx.writePropertiesToOClass(oClassesTree, titledPanesHbox);
     }
 

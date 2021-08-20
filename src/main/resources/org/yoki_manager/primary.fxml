@@ -81,9 +81,11 @@
                                         <Button fx:id="btnT2ReadDB" text="Reload" onAction="#T2ReadDB" minWidth="80"/>
                                         <Button fx:id="btnT2ReadOPropertiesFromOClass" text="Read"
                                                 onAction="#T2ReadOPropertiesFromOClass" minWidth="80"/>
-                                        <Button fx:id="btnT2SaveOPropertiesToOClass" text="Save"
-                                                onAction="#T2SaveOPropertiesToOClass"
+                                        <Button fx:id="btnT2AddOClass" text="Add" onAction="#T2AddOClass"
                                                 minWidth="80"/>
+                                        <!--<Button fx:id="btnT2SaveOPropertiesToOClass" text="Save"
+                                                onAction="#T2SaveOPropertiesToOClass"
+                                                minWidth="80"/>-->
                                         <padding>
                                             <Insets bottom="0.0" left="0.0" right="0.0" top="0.0"/>
                                         </padding>
@@ -93,8 +95,6 @@
                                                 onAction="#T2DuplicateOClass"
                                                 minWidth="80"/>
                                         <Button fx:id="btnT2DeleteOClass" text="Delete" onAction="#T2DeleteOClass"
-                                                minWidth="80"/>
-                                        <Button fx:id="btnT2AddOClass" text="Add" onAction="#T2AddOClass"
                                                 minWidth="80"/>
                                         <padding>
                                             <Insets bottom="0.0" left="0.0" right="0.0" top="0.0"/>
