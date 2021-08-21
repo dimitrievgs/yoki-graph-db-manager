@@ -25,6 +25,8 @@ import org.yoki_manager.orientdb.controls.oproperty.OPropertyNode;
 
 import java.io.IOException;
 
+import static org.yoki_manager.dialogs.MessageBox.LicenseDialog;
+
 public class PrimaryController {
     public HBox T1_RecordName_parent;
     public Button btnT1LoadDB;
@@ -117,11 +119,16 @@ public class PrimaryController {
                 System.out.println("Item C Clicked");
             }
         });
+        MenuItem menuItemLicense = new MenuItem("License");
+        menuItemLicense.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent e) {
+                LicenseDialog("License");
+            }
+        });
         final Menu menu2 = new Menu("Options");
         final Menu menu3 = new Menu("Help");
-        menu1.getItems().add(menuItemA);
-        menu1.getItems().add(menuItemB);
-        menu1.getItems().add(menuItemC);
+        menu3.getItems().add(menuItemLicense);
         //menuBar.getMenus().add(menu1);
         menubar1.getMenus().addAll(menu1, menu2, menu3);
     }
@@ -161,7 +168,11 @@ public class PrimaryController {
         btnSettings.addEventFilter(MouseEvent.MOUSE_CLICKED, (MouseEvent event) -> {
         });
 
-        leftVBox.getChildren().addAll(btnExpandCollapseTabPane, btnSettings);
+        String graphSVG = "icons/graph-db-pic.svg";
+        SVGButton btnGraph = new SVGButton(graphSVG, btnWidth, SVGButton.ScaleOn.Width,
+                Style.ColorBtnOff, Style.ColorBtnHover);
+
+        leftVBox.getChildren().addAll(btnExpandCollapseTabPane, btnSettings, btnGraph);
     }
 
     //int treetableview_width = 300;
@@ -216,7 +227,7 @@ public class PrimaryController {
         stage.setOnShowing(new EventHandler<WindowEvent>() {
             @Override
             public void handle(WindowEvent windowEvent) {
-                orientdbJavafx.loadAndShowOVerticesList(oVerticesTree, T1_RecordName.getText());
+                showOVertices();
                 orientdbJavafx.loadAndShowOClassesTree(oClassesTree, true, true);
             }
         });
@@ -283,6 +294,11 @@ public class PrimaryController {
     }
 
     public void T1LoadDB(ActionEvent actionEvent) {
+        showOVertices();
+    }
+
+    private void showOVertices()
+    {
         if (is_Tree_DB())
             orientdbJavafx.loadAndShowOVerticesChildsTree(oVerticesTree, T1_RecordName.getText());
         else orientdbJavafx.loadAndShowOVerticesList(oVerticesTree, T1_RecordName.getText());

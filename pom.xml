@@ -6,29 +6,13 @@
     <version>1.0-SNAPSHOT</version>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.source>11</maven.compiler.source>
-        <maven.compiler.target>11</maven.compiler.target>
-        <javafx.version>11</javafx.version>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
         <javafx.maven.plugin.version>0.0.4</javafx.maven.plugin.version>
         <orientdb.version>3.1.11</orientdb.version> <!-- 3.0.37, 3.2.0 выдавало ошибки, вроде, требовало другие зависимости -->
         <jnr-ffi.version>2.2.4</jnr-ffi.version> <!-- Needed for orientdb since 3.1.X -->
     </properties>
     <dependencies>
-        <dependency>
-            <groupId>org.openjfx</groupId>
-            <artifactId>javafx-controls</artifactId>
-            <version>${javafx.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.openjfx</groupId>
-            <artifactId>javafx-fxml</artifactId>
-            <version>${javafx.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.openjfx</groupId>
-            <artifactId>javafx-web</artifactId>
-            <version>${javafx.version}</version>
-        </dependency>
         <!-- https://mvnrepository.com/artifact/com.orientechnologies/orientdb-core -->
         <dependency>
             <groupId>com.orientechnologies</groupId>
@@ -49,7 +33,9 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.8.0</version>
                 <configuration>
-                    <release>11</release>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                    <release>1.8</release>
                 </configuration>
             </plugin>
             <plugin>
@@ -60,45 +46,6 @@
                     <mainClass>org.yoki_manager.App</mainClass> <!-- org.yoki_manager.JarFXAppLauncher -->
                 </configuration>
             </plugin>
-            <!-- https://github.com/AlmasB/JavaFX11-example/blob/master/pom.xml -->
-            <!-- https://ru.stackoverflow.com/questions/925966/javafx-11-%D0%9A%D0%B0%D0%BA-%D1%81%D0%BE%D0%B7%D0%B4%D0%B0%D1%82%D1%8C-%D0%B7%D0%B0%D0%BF%D1%83%D1%81%D0%BA%D0%B0%D0%B5%D0%BC%D1%8B%D0%B9-jar -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-shade-plugin</artifactId>
-                <version>3.0.0</version>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>shade</goal>
-                        </goals>
-                        <configuration>
-                            <transformers>
-                                <transformer
-                                        implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                    <mainClass>org.yoki_manager.JarFXAppLauncher</mainClass>
-                                </transformer>
-                            </transformers>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-
-            <!--><plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>exec-maven-plugin</artifactId>
-                <version>1.2.1</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>java</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <mainClass>org.yoki_manager.JarFXAppLauncher</mainClass>
-                </configuration>
-            </plugin>-->
         </plugins>
     </build>
 </project>

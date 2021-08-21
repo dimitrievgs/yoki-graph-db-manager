@@ -37,6 +37,8 @@ public class OClassVBox extends ODocumentVBox {
 
     Label nameLabel;
     TextField nameField;
+    Label iconLabel;
+    TextField iconPathField;
     Label descLabel;
     TextField descField;
     TableView<OPropertyNode> oPropertiesTable;
@@ -64,6 +66,12 @@ public class OClassVBox extends ODocumentVBox {
         nameField = new TextField();
         nameField.setId(oClassVBoxNameTextField);
         nameField.setText(oClassName);
+
+        iconLabel = new Label();
+        iconLabel.setText("Icon");
+        iconPathField = new TextField();
+        iconPathField.setId(oClassVBoxNameTextField);
+        iconPathField.setText("Choose Icon Path...");
 
         descLabel = new Label();
         descLabel.setText("Description");
@@ -113,7 +121,7 @@ public class OClassVBox extends ODocumentVBox {
         });
         hbox.getChildren().addAll(T2_New_PropertyName_TextField, T2_New_Property_DataType_Combobox, T2_AddProperty_Button, T2_DeleteProperty_Button, Save_Button);
 
-        oClassVBoxChildren.addAll(nameLabel, nameField, descLabel, descField, oPropertiesTable, hbox);
+        oClassVBoxChildren.addAll(nameLabel, nameField, iconLabel, iconPathField, descLabel, descField, oPropertiesTable, hbox);
     }
 
     public void setOClassOPropertiesTableColumns(TableView<OPropertyNode> oPropertiesTable) {
@@ -188,7 +196,7 @@ public class OClassVBox extends ODocumentVBox {
                 OClassNode class_node = ti.getValue();
                 OClass oClass = class_node.getOClass();*/
 
-        var hi = oClassesTree.getRoot().getChildren();
+        ObservableList<OClassNode> hi = oClassesTree.getRoot().getChildren();
         TreeItem<OClassNode> ti = findTreeTableViewItem(oClassesTree.getRoot(), oClass);
         String new_Name = nameField.getText();
         String new_Description = descField.getText();

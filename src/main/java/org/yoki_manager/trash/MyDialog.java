@@ -21,7 +21,7 @@ public class MyDialog extends Dialog {
 
             loadContent();
 
-            var dialogPane = getDialogPane();
+            DialogPane dialogPane = getDialogPane();
             dialogPane.setContent(rootLayout);
 
             setStyle(dialogPane);
@@ -44,8 +44,8 @@ public class MyDialog extends Dialog {
     }
 
     private void setStyle(DialogPane dialogPane) {
-        var stage = (Stage) dialogPane.getScene().getWindow();
-        var classLoader = MyDialog.class.getClassLoader();
+        Stage stage = (Stage) dialogPane.getScene().getWindow();
+        ClassLoader classLoader = MyDialog.class.getClassLoader();
 
         stage.getIcons().add(new Image("image/avatar.png"));
 

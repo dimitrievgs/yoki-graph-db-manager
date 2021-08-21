@@ -40,7 +40,7 @@
                                         <TextField fx:id="T1_RecordName"/>
                                     </HBox>
                                     <HBox spacing="10">
-                                        <ToggleButton fx:id="btnT1LoadDBToggle" text="Plain (all)"
+                                        <ToggleButton fx:id="btnT1LoadDBToggle" text="Plain (all)" selected="true"
                                                       minWidth="80"/>
                                         <Button fx:id="btnT1LoadDB" text="Reload" onAction="#T1LoadDB" minWidth="80"/>
                                         <Button fx:id="btnT1ReadOPropertiesFromOVertices" text="Read"

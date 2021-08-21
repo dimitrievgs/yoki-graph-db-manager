@@ -106,7 +106,7 @@ public class OrientdbJavafx {
 
         oVerticesTree.setRoot(root);
         oVerticesTree.getColumns().setAll(name_column, oclass_column/*, rid_column*/);
-        oVerticesTree.setPrefWidth(152);
+        //oVerticesTree.setPrefWidth(152);
         oVerticesTree.setShowRoot(true);
     }
 
@@ -407,6 +407,9 @@ public class OrientdbJavafx {
                 ScrollableTitledEntityPane scrollableTitledEntityPane = titledPanes.addNewEntityVBox(oVertexVBox, oVertexName, inNewTitledPane);
                 ObservableList<javafx.scene.Node> oVertexVBoxChildren = oVertexVBox.getChildren();
 
+                Button btnRandomizeAll = new Button();
+                btnRandomizeAll.setText("randomize all");
+
                 Label nameLabel = new Label();
                 nameLabel.setText("Name");
                 TextField nameField = new TextField();
@@ -414,13 +417,14 @@ public class OrientdbJavafx {
                 nameField.setText(oVertexName);
                 //nameField.minWidthProperty().bind(scrollableTitledEntityPane.entityInnerWidthProperty());
                 //nameField.maxWidthProperty().bind(scrollableTitledEntityPane.entityInnerWidthProperty());
-                oVertexVBoxChildren.addAll(nameLabel, nameField);
+                oVertexVBoxChildren.addAll(btnRandomizeAll, nameLabel, nameField);
 
                 Set<String> oVertexPropertiesNames = oVertex.getPropertyNames();
                 List<Object> oVertexPropertiesValues = new ArrayList<>();
                 for (String propName : oVertexPropertiesNames) {
-                    var p = oVertex.getProperty(propName);
-                    oVertexPropertiesValues.add(p);
+                    Object p = oVertex.getProperty(propName);
+                    String s_p = String.valueOf(p);
+                    oVertexPropertiesValues.add(s_p);
                 }
 
 
@@ -432,13 +436,15 @@ public class OrientdbJavafx {
                     if (dataType != null && dataType.equals(OPropertyCustomAttribute.DataType.textPropertyType)) {
                         Label label = new Label();
                         label.setText(property_name);
+                        Button btnRandomize = new Button();
+                        btnRandomize.setText("randomize");
                         String s_value = (String) value;
                         OPropertyTextArea TA = new OPropertyTextArea(property);
                         TA.setHtmlText(s_value);
                         TA.setMaxHeight(300);
                         //TA.minWidthProperty().bind(scrollableTitledEntityPane.entityInnerWidthProperty());
                         //TA.maxWidthProperty().bind(scrollableTitledEntityPane.entityInnerWidthProperty());
-                        oVertexVBoxChildren.addAll(label, TA);
+                        oVertexVBoxChildren.addAll(label, btnRandomize, TA);
                     }
                 }
             }

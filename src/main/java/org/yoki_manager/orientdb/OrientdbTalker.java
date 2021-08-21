@@ -41,7 +41,8 @@ import org.yoki_manager.orientdb.treetableview.OVertexNode;
 import java.util.*;
 
 public class OrientdbTalker {
-    String orientdb_path = "embedded:D:/orient_dbs/"; //"embedded:" + ResourcesManager.getAppPath() + "\\orient_dbs\\"; //"embedded:D:/orient_dbs/"; //"embedded:/tmp/"
+    String orientdb_path = "embedded:" + ResourcesManager.getAppPath() + "\\orient_dbs\\";
+    //"embedded:" + ResourcesManager.getAppPath() + "\\orient_dbs\\"; //"embedded:D:/orient_dbs/"; //"embedded:/tmp/"
     String db_name = "example_db";
     String user_name = "admin";
     String password = "admin";
@@ -143,7 +144,7 @@ public class OrientdbTalker {
      * @return
      */
     public static OClass getOElementOClass(OElement t) {
-        var st = t.getSchemaType();
+        java.util.Optional<com.orientechnologies.orient.core.metadata.schema.OClass> st = t.getSchemaType();
         if (st.isPresent() == true) {
             OClass oClass = st.get();
             return oClass;
@@ -309,7 +310,7 @@ public class OrientdbTalker {
 
                 Set<String> PropertiesNames = prototype.getPropertyNames();
                 for (String PropertyName : PropertiesNames) {
-                    var p_value = prototype.getProperty(PropertyName); //Надо сделать для более общего случая, не только для String
+                    String p_value = prototype.getProperty(PropertyName); //Надо сделать для более общего случая, не только для String
                     if (PropertyName == "Name")
                         p_value = p_value.toString() + OVertex_Name_Extra_Char;
                     oVertex2.setProperty(PropertyName, p_value);
